@@ -1,0 +1,98 @@
+name: 'Destroy Dynamic Ephemeral Project IaC K8S'
+
+on:
+  workflow_dispatch:
+    inputs:
+      dryRun:
+        description: 'Dry run'
+        required: true
+        default: true
+        type: boolean
+      password:
+        description: 'Check in shared keys PWD_GITHUB_TF_DESTROY. Only required when Dry run is NOT checked '
+        required: false
+        type: string
+        default: pwd
+
+env:
+  ARM_CLIENT_ID: ${{ secrets.AZURE_WP_HUB_CLIENT_ID }}
+  ARM_CLIENT_SECRET: ${{ secrets.AZURE_WP_HUB_SECRET }}
+  ARM_TENANT_ID: ${{ secrets.AZURE_WORKPLACE_TENANT_ID_HUB }}
+  
+jobs:
+  check_password:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Verify password
+      run: |
+        set -e
+        echo "Verifying password..."
+        INPUT_PASSWORD=$(jq -r '.inputs.password' $GITHUB_EVENT_PATH) >> $GITHUB_ENV
+        INPUT_PASSWORD_HASH=$(echo -n "$INPUT_PASSWORD" | base64 )
+
+        if [[ ${{ github.event.inputs.dryRun }} == true ]]; then
+          echo "Password not needed"
+        else
+          if [[ "$INPUT_PASSWORD_HASH" == "cDQ0c3RmZDNsM3Qz" ]]; then
+            echo "Password verification successful."
+          else
+            echo "Password verification failed."
+            exit 1
+          fi
+        fi
+
+  terraform-destroy:
+    name: 'Terraform Destroy'
+    needs: check_password
+    runs-on: self-hosted
+    env:
+      ARM_SKIP_PROVIDER_REGISTRATION: true
+    outputs:
+      tfplanExitCode: ${{ steps.tf-plan.outputs.exitcode }}
+    steps:
+    # Checkout the repository to the GitHub Actions runner
+    - name: Check out repository code
+      uses: actions/checkout@v3
+
+    # Install the latest version of the Terraform CLI
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_wrapper: false
+
+    # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+    - name: Inject variables
+      run: |
+        sed -i 's#VAR_ACCESSKEY#${{ secrets.AZURE_WORKPLACE_TFSTATE_ACCESSKEY }}#g' backend_config.hcl
+        sed -i 's#SSL_CERT_SECRET#${{ secrets.SSL_CERT }}#g' keyvault.tf
+    - name: Terraform Init
+      id: init
+      run: |
+        terraform init -backend-config backend_config.hcl -upgrade
+
+    # Generates an execution plan for Terraform
+    # An exit code of 0 indicated no changes, 1 a terraform failure, 2 there are pending changes.
+    - name: Terraform Plan
+      id: tf-plan
+      run: |
+        export exitcode=0
+        terraform plan -destroy -detailed-exitcode -no-color -var-file=terraform.tfvars.json -out tfplan || export exitcode=$?
+
+        echo "exitcode=$exitcode" >> $GITHUB_OUTPUT
+        
+        if [ $exitcode -eq 1 ]; then
+          echo Terraform Destroy Plan Failed!
+          exit 1
+        else 
+          exit 0
+        fi
+
+    # Terraform Destroy
+    - name: Terraform Destroy
+      run: |
+        if [[ ${{ github.event.inputs.dryRun }} == true ]]; then
+          echo "dry run - terraform apply -destroy tfplan"
+        else
+          echo "apply - terraform apply -destroy tfplan"
+          terraform apply -destroy tfplan
+        fi

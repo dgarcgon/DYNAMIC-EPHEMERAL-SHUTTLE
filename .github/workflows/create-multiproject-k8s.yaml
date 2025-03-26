@@ -1,0 +1,97 @@
+name: 'Create Dynamic Ephemeral Project Base'
+
+on:
+  workflow_dispatch:
+    inputs:
+      dryRun:
+        description: 'Dry run'
+        required: true
+        default: true
+        type: boolean
+
+env:
+  ARM_CLIENT_ID: ${{ secrets.AZURE_WP_HUB_CLIENT_ID }}
+  ARM_CLIENT_SECRET: ${{ secrets.AZURE_WP_HUB_SECRET }}
+  ARM_TENANT_ID: ${{ secrets.AZURE_WORKPLACE_TENANT_ID_HUB }}
+
+jobs:
+  check-if-configured:
+    name: Check if project configuration is done
+    runs-on: ubuntu-latest
+    outputs:
+      status: ${{ steps.early.conclusion }}
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - name: Checking cfg-applied.txt file existence
+        id: check_files
+        uses: andstor/file-existence-action@v3
+        with:
+          files:  'cfg-applied.txt'
+      - name: Configuration is done
+        if: steps.check_files.outputs.files_exists != 'true'
+        run: |
+          echo "THE PROJECT IS NOT YET CONFIGURED. PLEASE RUN THE MANDATORY PROJECT CONFIGURATION PIPELINE"
+          exit 1
+
+  terraform-plan-apply:
+    needs: [check-if-configured]
+    name: 'Terraform Plan/Apply'
+    runs-on: self-hosted
+    env:
+      ARM_SKIP_PROVIDER_REGISTRATION: true
+    outputs:
+      tfplanExitCode: ${{ steps.tf-plan.outputs.exitcode }}
+    steps:
+    # Checkout the repository to the GitHub Actions runner
+    - name: Check out repository code
+      uses: actions/checkout@v3
+
+    # Install the latest version of the Terraform CLI
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_wrapper: false
+
+    # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
+    - name: Inject variables
+      run: |
+        sed -i 's#VAR_ACCESSKEY#${{ secrets.AZURE_WORKPLACE_TFSTATE_ACCESSKEY }}#g' backend_config.hcl
+        sed -i 's#SSL_CERT_SECRET#${{ secrets.SSL_CERT }}#g' keyvault.tf
+    - name: Terraform Init
+      id: init
+      run: |
+        terraform init -backend-config backend_config.hcl -upgrade
+
+    # Checks that all Terraform configuration files adhere to a canonical format
+    # Will fail the build if not
+#    - name: Terraform Format
+#      run: terraform fmt -check
+
+    # Generates an execution plan for Terraform
+    # An exit code of 0 indicated no changes, 1 a terraform failure, 2 there are pending changes.
+    - name: Terraform Plan
+      id: tf-plan
+      run: |
+        export exitcode=0
+        terraform plan -detailed-exitcode -no-color -var-file=terraform.tfvars.json -out tfplan || export exitcode=$?
+
+        echo "exitcode=$exitcode" >> $GITHUB_OUTPUT
+        
+        if [ $exitcode -eq 1 ]; then
+          echo Terraform Plan Failed!
+          exit 1
+        else 
+          exit 0
+        fi
+        
+    # Terraform Apply
+    - name: Terraform Apply
+      run: |
+        if [[ ${{ github.event.inputs.dryRun }} == true ]]; then
+          echo "dry run - terraform apply -auto-approve tfplan"
+        else
+          echo "apply - terraform apply -auto-approve tfplan"
+          terraform apply -auto-approve tfplan
+        fi
+
