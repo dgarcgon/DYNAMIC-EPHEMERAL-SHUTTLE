@@ -1,5 +1,5 @@
 resource_group_name  = "tfstate-rg"
 storage_account_name = "mevtfstatebucket"
 container_name       = "tfstate"
-key                  = "dynamicepehemral-VAR_TEMPLATE_PROJECT_CODE_LOWERCASE-base-env"
+key                  = "dynamicepehemral-daj-base-env"
 access_key           = "VAR_ACCESSKEY"
