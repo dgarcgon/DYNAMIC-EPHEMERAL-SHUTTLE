@@ -10,7 +10,7 @@ on:
 
 jobs:
   call-workflow-passing-data:
-    uses: ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-DAJ-k8s/blob/main/.github/workflows/called-workflow.yaml@main
+    uses: ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-DAJ-k8s/blob/main/.github/workflows/called-workflow.yaml
     with:
       PROJECT_CODE: ${{ github.event.inputs.PROJECT_CODE }}
     secrets:
