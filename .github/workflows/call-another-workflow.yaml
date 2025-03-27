@@ -14,4 +14,4 @@ jobs:
     with:
       PROJECT_CODE: ${{ github.event.inputs.PROJECT_CODE }}
     secrets:
-      token: ${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN }}
+      token: "${{ secrets.TOKEN_PACKAGES }}"
