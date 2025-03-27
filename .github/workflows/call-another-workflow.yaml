@@ -1,4 +1,5 @@
 name: Caller-Wrokflow
+
 on:
   workflow_dispatch:
     inputs:
@@ -10,6 +11,7 @@ on:
 
 jobs:
   call-workflow-passing-data:
+    name: Call another WF
     uses: ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-DAJ-k8s/blob/main/.github/workflows/called-workflow.yaml@main
     with:
       PROJECT_CODE: ${{ github.event.inputs.PROJECT_CODE }}
