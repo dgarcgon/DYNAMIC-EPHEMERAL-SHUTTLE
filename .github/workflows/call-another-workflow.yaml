@@ -13,5 +13,3 @@ jobs:
     uses: ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-DAJ-k8s/.github/workflows/called-workflow.yml@main
     with:
       PROJECT_CODE: ${{ github.event.inputs.PROJECT_CODE }}
-    secrets:
-      token: "${{ secrets.TOKEN_PACKAGES }}"
