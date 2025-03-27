@@ -1,27 +1,15 @@
-name: Docker and Push Image in Package
+name: Caller-Wrokflow
 on:
-  push:
-    tags: [ t* ]
-
-env:
-  IMAGEN_TAG: ${{ github.ref_name }}
+  workflow_dispatch:
+    inputs:
+      PROJECT_CODE:
+        description: 'Project Code: (Example: demo)'
+        required: true
+        default: ""
+        type: text
 
 jobs:
-  env-vars:
-    runs-on: ubuntu-latest
-    outputs:
-      IMAGE_TAG: ${{ env.IMAGEN_TAG }}
-    steps:
-    - uses: actions/checkout@v3
-    - name: add env variables
-      shell: bash
-      run: |
-          echo "IMAGE_TAG=${{ env.IMAGEN_TAG }}" 
   call-workflow-passing-data:
-    needs: [env-vars]
     uses: ES-BAR-MEV/IDM-MEV-COM-CommonResources/.github/workflows/DockerToPackage.yml@main
     with:
-      imagen: es-bar-mev/custom-runner-mev
-      imagen_tag: ${{  needs.env-vars.outputs.IMAGE_TAG }}
-    secrets:
-      token: "${{ secrets.TOKEN_PACKAGES }}"
+      PROJECT_CODE: "${{ github.event.inputs.PROJECT_CODE }}"
