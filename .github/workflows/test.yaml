@@ -15,10 +15,15 @@ jobs:
         expand: 'true'
     - name: Check noExport result
       run: |
-        echo "env.PROTOCOL: '${{env.PROTOCOL}}'"
-        echo "env.HOST: '${{env.HOST}}'" 
-        
-# env.PROTOCOL == 'https'
-# env.HOST == 'example.com'
-# env.PORT == '8080'
-# env.URI == 'https://example.com:8080'
+        echo "env.PROJECT_CODE: '${{env.PROJECT_CODE}}'" 
+        echo "env.VNET_SUPERNET: '${{env.VNET_SUPERNET}}'" 
+        echo "env.SUBNETS_COMMON_IP: '${{env.SUBNETS_COMMON_IP}}'" 
+        echo "env.SUBNETS_APPGW_IP: '${{env.SUBNETS_APPGW_IP}}'" 
+        echo "env.SUBNETS_APPGW_PRIVATE_IP_ADDRESS: '${{env.SUBNETS_APPGW_PRIVATE_IP_ADDRESS}}'" 
+        echo "env.SUBNETS_AKS_NODE_IP: '${{env.SUBNETS_AKS_NODE_IP}}'" 
+        echo "env.NSGS_APPGW_DESTINATION_ADDRESS_PREFIX: '${{env.NSGS_APPGW_DESTINATION_ADDRESS_PREFIX}}'" 
+        echo "env.APPGW_LISTENERS_WILDCARD_BACKENDSIPS: '${{env.APPGW_LISTENERS_WILDCARD_BACKENDSIPS}}'" 
+        echo "env.LOAD_BALANCER_IP: '${{env.LOAD_BALANCER_IP}}'" 
+        echo "env.KEYCLOAK_ARGOCD_CLIENT_SECRET: '${{env.KEYCLOAK_ARGOCD_CLIENT_SECRET}}'" 
+        echo "env.CREATE_MSSQL_DB: '${{env.CREATE_MSSQL_DB}}'" 
+        echo "env.DB_ADMIN_PWD: '${{env.DB_ADMIN_PWD}}'" 
