@@ -1,4 +1,4 @@
-name: Configure_and_Create_Project
+name: 2. Configure And Create Projects
 on:
   workflow_dispatch:
     inputs:
