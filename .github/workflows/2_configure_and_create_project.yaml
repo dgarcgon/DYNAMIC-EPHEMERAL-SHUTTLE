@@ -11,6 +11,6 @@ on:
 jobs: 
   call-workflow-passing-data:
     name: 'Calling the external workflows to configure and create the project'
-    uses: ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-github.event.inputs.PROJECT_CODE-k8s/.github/workflows/called-workflow.yml@main
+    uses: "ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-${{ github.event.inputs.PROJECT_CODE }}-k8s/.github/workflows/called-workflow.yml@main"
     with:
       PROJECT_CODE: ${{ github.event.inputs.PROJECT_CODE }}
