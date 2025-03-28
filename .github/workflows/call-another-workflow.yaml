@@ -36,11 +36,11 @@ jobs:
       env:
           GH_TOKEN: "${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN  }}"
 
-#  call-workflow-passing-data:
-#    needs: [grant-repo-permissions]
-#    uses: ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-DAJ-base/.github/workflows/internal-wf.yaml@main
-#    with:
-#      PROJECT_CODE: ${{ github.event.inputs.PROJECT_CODE }}
+  call-workflow-passing-data:
+    needs: [grant-repo-permissions]
+    uses: ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-DAJ-base/.github/workflows/internal-wf.yaml@main
+    with:
+      PROJECT_CODE: ${{ github.event.inputs.PROJECT_CODE }}
 
 
 #clone it
