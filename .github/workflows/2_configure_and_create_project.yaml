@@ -9,8 +9,42 @@ on:
         type: text
 
 jobs: 
+#  call-workflow-passing-data:
+#    name: 'Calling the external workflows to configure and create the project'
+#    uses: ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-${{ github.event.inputs.PROJECT_CODE }}-k8s/.github/workflows/called-workflow.yml@main
+#    with:
+#      PROJECT_CODE: ${{ github.event.inputs.PROJECT_CODE }}
   call-workflow-passing-data:
-    name: 'Calling the external workflows to configure and create the project'
-    uses: "ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-"${{ github.event.inputs.PROJECT_CODE }}"-k8s/.github/workflows/called-workflow.yml@main"
-    with:
-      PROJECT_CODE: ${{ github.event.inputs.PROJECT_CODE }}
+    runs-on: ubuntu-latest
+    container:
+      env:
+        repo: ${{ github.event.inputs.PROJECT_CODE }}
+    steps:
+      - name: Call action
+        uses: ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-${{ env.repo }}-k8s/.github/workflows/called-workflow.yml@main
+
+        
+#  call-workflow-passing-data:
+#    runs-on: ubuntu-latest
+#    steps:
+#    - name: Setup dynamic workflow
+#      uses: actions/github-script@v6
+#      with:
+#        script: |
+#          const path = require('path');
+#          const fs = require('fs/promises');
+#          const workflow = {
+#            name: "Dynamic workflow",
+#            on: {
+#              workflow_call: {}
+#            },
+#            jobs: {
+#              actual-deploy: {
+#                uses: "ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-"${{ github.event.inputs.PROJECT_CODE }}"-k8s/.github/workflows/called-workflow.yml@main",
+#                with: {
+#                  PROJECT_CODE: ${{ github.event.inputs.PROJECT_CODE }}
+#                }
+#              }
+#            }
+#          };
+#          await fs.writeFile(${{ env.DYNAMIC_WORKFLOW }}, JSON.stringify(workflow));
