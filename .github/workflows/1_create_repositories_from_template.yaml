@@ -23,7 +23,7 @@ jobs:
             core.setOutput('prj_code_lower', '${{github.event.inputs.PROJECT_CODE }}'.toLowerCase().replaceAll(/[/.]/g, '-').trim('-'));
             core.setOutput('prj_code_upper', '${{github.event.inputs.PROJECT_CODE }}'.toUpperCase().replaceAll(/[/.]/g, '-').trim('-'));     
             
-  create-k8s-repositories:
+  create-repositories:
     needs: [format_prj_coode]
     name: 'Creating new repo'
     runs-on: ubuntu-latest
@@ -40,7 +40,7 @@ jobs:
           GH_TOKEN: "${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN  }}"
 
   grant-repositories-permissions:
-    needs: [create-k8s-repo,format_prj_coode]
+    needs: [create-repositories,format_prj_coode]
     name: 'Granting permissions to repo'
     runs-on: ubuntu-latest  
     env:
@@ -55,7 +55,7 @@ jobs:
           GH_TOKEN: "${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN  }}"
 
   creating-deployments-workflow:
-    needs: [ grant-k8s-repo-permissions, format_prj_coode]
+    needs: [ grant-repositories-permissions, format_prj_coode]
     runs-on: ubuntu-latest
     env:
       PROJECT_CODE_LOWERCASE: ${{ needs.format_prj_coode.outputs.prj_code_lower }}
