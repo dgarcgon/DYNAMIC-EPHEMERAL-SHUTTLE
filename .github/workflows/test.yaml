@@ -10,7 +10,7 @@ jobs:
     steps:
       - id: matrix
         run: |
-          echo "value=[\"a\", \"b\", \"c\"]" >> $GITHUB_OUTPUT
+          echo "value=[\"cfg-applied.txt\", \"params/01_params.env\", \"params/02_params.env\"]" >> $GITHUB_OUTPUT
       - run: |
           echo "${{ steps.matrix.outputs.value }}"
   build:
@@ -20,8 +20,20 @@ jobs:
       matrix:
         value: ${{fromJSON(needs.setup.outputs.matrix)}}
     steps:
-      - run: |
-          echo "${{ matrix.value }}"
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - name: Checking cfg-applied.txt file existence
+        id: check_files
+        uses: andstor/file-existence-action@v3
+        with:
+          files:  '${{ matrix.value }}'
+      - name: Configuration is done
+        if: steps.check_files.outputs.files_exists == 'true'
+        run: |
+          echo "THE PROJECT IS CURRENTLY CONFIGURED"
+#          exit 1
+#      - run: |
+#          echo "${{ matrix.value }}"
 
   load-env-vars:
     name: 'Load env vars'
