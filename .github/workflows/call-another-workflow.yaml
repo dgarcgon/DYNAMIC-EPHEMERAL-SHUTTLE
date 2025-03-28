@@ -38,7 +38,7 @@ jobs:
 
   call-workflow-passing-data:
     needs: [grant-repo-permissions]
-    uses: .github/workflows/internal-wf.yml@main
+    uses: ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-DAJ-base/.github/workflows/internal-wf.yaml@main
     with:
       PROJECT_CODE: ${{ github.event.inputs.PROJECT_CODE }}
 
