@@ -1,1 +1,16 @@
+name: Caller-Wrokflow
+on:
+  workflow_dispatch:
+    inputs:
+      PROJECT_CODE:
+        description: 'Project Code: (Example: demo)'
+        required: true
+        default: ""
+        type: text
 
+jobs:
+  call-workflow-passing-data:
+    needs: [grant-repo-permissions]
+    uses: ES-BAR-MEV/jrq-project/.github/workflows/called-workflow.yml@main
+    with:
+      PROJECT_CODE: ${{ github.event.inputs.PROJECT_CODE }}
