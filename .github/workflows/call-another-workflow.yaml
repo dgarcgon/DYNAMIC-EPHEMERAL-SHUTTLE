@@ -1,18 +1,6 @@
-name: Caller-Wrokflow
+name: Create_Repositories_From_Template
 on:
   workflow_dispatch:
-    inputs:
-      PROJECT_CODE:
-        description: 'Project Code: (Example: demo)'
-        required: true
-        default: ""
-        type: text
-
-#jobs:
-#  call-workflow-passing-data:
-#    uses: ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-DAJ-k8s/.github/workflows/called-workflow.yml@main
-#    with:
-#      PROJECT_CODE: ${{ github.event.inputs.PROJECT_CODE }}
 
 jobs:
   create-repo:
@@ -35,19 +23,3 @@ jobs:
          gh api --method PUT -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" /repos/ES-BAR-MEV/jrq-project/actions/permissions/access -f "access_level=organization"
       env:
           GH_TOKEN: "${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN  }}"
-
-  call-workflow-passing-data:
-    needs: [grant-repo-permissions]
-    uses: ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-DAJ-base/.github/workflows/internal-wf.yaml@main
-    with:
-      PROJECT_CODE: ${{ github.event.inputs.PROJECT_CODE }}
-
-
-#clone it
-#as commented remove the .git folder
-#git init .
-#git add .
-#git commit -m "First commit"
-#create a new empty repository on GitHub using the new gh CLI: gh repo create
-#git push -u origin master
-
