@@ -63,12 +63,12 @@ jobs:
       - uses: nearform-actions/github-action-copy-files@v1.2.2
         with:
           source: ".github/workflows/TEMPLATE_configure_and_create_project.yaml"
-          destination: ".github/workflows/${{ env.PROJECT_CODE_UPPERCASE}}_configure_and_create_project.yaml"
+          destination: ".github/workflows/"
           options: |
             {
               "overwrite": true,
               "flat": true,
-              "rename": "new-name"
+              "rename": "${{ env.PROJECT_CODE_UPPERCASE}}_configure_and_create_project.yaml"
             }
       - name: update file and push to remote
         run: |
