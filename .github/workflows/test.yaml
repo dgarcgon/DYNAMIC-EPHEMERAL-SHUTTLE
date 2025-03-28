@@ -13,7 +13,11 @@ jobs:
       with:
         envFile: 'params/01_params.env'
         expand: 'true'
-      
+    - name: Check noExport result
+      run: |
+        echo "env.PROTOCOL: '${{env.PROTOCOL}}'"
+        echo "env.HOST: '${{env.HOST}}'" 
+        
 # env.PROTOCOL == 'https'
 # env.HOST == 'example.com'
 # env.PORT == '8080'
