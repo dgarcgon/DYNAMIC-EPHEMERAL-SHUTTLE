@@ -18,7 +18,7 @@ jobs:
     runs-on: ubuntu-latest
     container:
       env:
-        repo: ${{ github.event.inputs.PROJECT_CODE }}
+        repo: "${{ github.event.inputs.PROJECT_CODE }}"
     steps:
       - name: Call action
         uses: ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-${{ env.repo }}-k8s/.github/workflows/called-workflow.yml@main
