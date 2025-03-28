@@ -21,6 +21,16 @@ jobs:
     steps:
     - name: Creating 
       run: |
-         gh repo create jrq-test --template="ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-DAJ-k8s" --private
+         git clone git@github.com:ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-DAJ-k8s.git
       env:
           GH_TOKEN: ${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN  }}
+
+
+#clone it
+#as commented remove the .git folder
+#git init .
+#git add .
+#git commit -m "First commit"
+#create a new empty repository on GitHub using the new gh CLI: gh repo create
+#git push -u origin master
+
