@@ -9,8 +9,13 @@ on:
         type: text
 
 jobs: 
-  call-workflow-passing-data:
-    name: 'Calling the external workflows to configure and create the project'
+  call-workflow-k8s:
+    name: 'Calling the external k8s workflows to configure and create the project'
     uses: ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-VAR_TEMPLATE_PROJECT_CODE_UPPERCASE-k8s/.github/workflows/called-workflow.yml@main
+    with:
+      PROJECT_CODE: ${{ github.event.inputs.PROJECT_CODE }}
+  call-workflow-frontend:
+    name: 'Calling the external frontend workflows to configure and create the project'
+    uses: ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-VAR_TEMPLATE_PROJECT_CODE_UPPERCASE-frontend-aks/.github/workflows/called-workflow.yml@main
     with:
       PROJECT_CODE: ${{ github.event.inputs.PROJECT_CODE }}
