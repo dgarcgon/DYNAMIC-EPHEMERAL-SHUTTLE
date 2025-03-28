@@ -36,11 +36,11 @@ jobs:
       env:
           GH_TOKEN: "${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN  }}"
 
-#  call-workflow-passing-data:
-#    needs: [grant-repo-permissions]
-#    uses: ES-BAR-MEV/jrq-project/.github/workflows/called-workflow.yml@main
-#    with:
-#      PROJECT_CODE: ${{ github.event.inputs.PROJECT_CODE }}
+  call-workflow-passing-data:
+    needs: [grant-repo-permissions]
+    uses: .github/workflows/called-workflow.yml@main
+    with:
+      PROJECT_CODE: ${{ github.event.inputs.PROJECT_CODE }}
 
 
 #clone it
