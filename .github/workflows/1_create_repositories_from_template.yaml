@@ -25,7 +25,7 @@ jobs:
             
   create-repositories:
     needs: [format_prj_coode]
-    name: 'Creating new repo'
+    name: 'Creating new repositories'
     runs-on: ubuntu-latest
     env:
       PROJECT_CODE_UPPERCASE: ${{ needs.format_prj_coode.outputs.prj_code_upper }}
@@ -41,7 +41,7 @@ jobs:
 
   grant-repositories-permissions:
     needs: [create-repositories,format_prj_coode]
-    name: 'Granting permissions to repo'
+    name: 'Granting permissions to repositories'
     runs-on: ubuntu-latest  
     env:
       PROJECT_CODE_UPPERCASE: ${{ needs.format_prj_coode.outputs.prj_code_upper }}
@@ -56,6 +56,7 @@ jobs:
 
   creating-deployments-workflow:
     needs: [ grant-repositories-permissions, format_prj_coode]
+    name: 'Creating deployment workflow'
     runs-on: ubuntu-latest
     env:
       PROJECT_CODE_LOWERCASE: ${{ needs.format_prj_coode.outputs.prj_code_lower }}
