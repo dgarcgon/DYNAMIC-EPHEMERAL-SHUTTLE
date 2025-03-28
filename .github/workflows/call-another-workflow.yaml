@@ -8,22 +8,12 @@ on:
         default: ""
         type: text
 
-#jobs:
-#  call-workflow-passing-data:
-#    uses: ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-DAJ-k8s/.github/workflows/called-workflow.yml@main
-#    with:
-#      PROJECT_CODE: ${{ github.event.inputs.PROJECT_CODE }}
-
 jobs:
-  configure-project:
-    runs-on: ubuntu-latest  
-    name: 'New repo'
-    steps:
-    - name: Creating 
-      run: |
-         git clone git@github.com:ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-DAJ-k8s.git
-      env:
-          GH_TOKEN: "${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN  }}"
+  call-workflow-passing-data:
+    uses: ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-DAJ-k8s/.github/workflows/called-workflow.yml@main
+    with:
+      PROJECT_CODE: ${{ github.event.inputs.PROJECT_CODE }}
+
 
 
 #clone it
