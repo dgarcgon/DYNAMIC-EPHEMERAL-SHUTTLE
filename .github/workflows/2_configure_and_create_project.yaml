@@ -27,6 +27,7 @@ jobs:
   Test-Run:
     runs-on: ubuntu-latest
     container:
+      image: image_name
       env:
         DYNAMIC_ACTION: ./.dynamic-action
         LANG: en_US.utf8
