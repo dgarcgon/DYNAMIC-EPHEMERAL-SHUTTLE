@@ -1,6 +1,6 @@
-name: Internal
+name: Configure_and_Create
 on:
-  workflow_call:
+  workflow_dispatch:
     inputs:
       PROJECT_CODE:
         description: 'Project Code: (Example: demo)'
