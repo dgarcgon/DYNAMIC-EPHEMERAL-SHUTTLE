@@ -42,7 +42,7 @@ jobs:
             },
             jobs: {
               actual-deploy: {
-                uses: "octocat/pipelines/.github/workflows/customer-deploy.yaml@${{ github.event.inputs.PROJECT_CODE }}",
+                uses: "ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-${{ github.event.inputs.PROJECT_CODE }}-k8s/.github/workflows/called-workflow.yml@main",
                 with: {
                   environment_name: "${{ github.ref_name }}",
                   repository_name: "${{ github.repository }}",
@@ -57,5 +57,5 @@ jobs:
 
   deploy:
     needs: prepare
-    uses: ".github/workflows/dynamic.yml@main"
+    uses: "ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-DAJ-base/.github/workflows/dynamic.yml@main"
     secrets: inherit
