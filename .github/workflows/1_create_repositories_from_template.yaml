@@ -23,28 +23,66 @@ jobs:
             core.setOutput('prj_code_lower', '${{github.event.inputs.PROJECT_CODE }}'.toLowerCase().replaceAll(/[/.]/g, '-').trim('-'));
             core.setOutput('prj_code_upper', '${{github.event.inputs.PROJECT_CODE }}'.toUpperCase().replaceAll(/[/.]/g, '-').trim('-'));     
             
-  create-k8s-repo:
+#  create-k8s-repo:
+#    needs: [format_prj_coode]
+#    name: 'Creating new repo'
+#    runs-on: ubuntu-latest
+#    env:
+#      PROJECT_CODE_UPPERCASE: ${{ needs.format_prj_coode.outputs.prj_code_upper }}
+#    steps:
+#    - name: Creating 
+#      run: |
+#         gh repo create ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-${{ env.PROJECT_CODE_UPPERCASE}}-k8s --private --template ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-DAJ-k8s
+#      env:
+#          GH_TOKEN: "${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN  }}"
+
+#  grant-k8s-repo-permissions:
+#    needs: [create-k8s-repo,format_prj_coode]
+#    name: 'Granting permissions to repo'
+#    runs-on: ubuntu-latest  
+#    env:
+#      PROJECT_CODE_UPPERCASE: ${{ needs.format_prj_coode.outputs.prj_code_upper }}
+#    steps:
+#    - name: Creating 
+#      run: |
+#         gh api --method PUT -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" /repos/ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-${{ env.PROJECT_CODE_UPPERCASE}}-k8s/actions/permissions/access -f "access_level=organization"
+#      env:
+#          GH_TOKEN: "${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN  }}"
+
+  configure-project:
     needs: [format_prj_coode]
-    name: 'Creating new repo'
+    name: 'Configure project'
     runs-on: ubuntu-latest
     env:
+      PROJECT_CODE_LOWERCASE: ${{ needs.format_prj_coode.outputs.prj_code_lower }}
       PROJECT_CODE_UPPERCASE: ${{ needs.format_prj_coode.outputs.prj_code_upper }}
     steps:
-    - name: Creating 
-      run: |
-         gh repo create ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-${{ env.PROJECT_CODE_UPPERCASE}}-k8s --private --template ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-DAJ-k8s
-      env:
-          GH_TOKEN: "${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN  }}"
+    - name: Check out repository code
+      uses: actions/checkout@v3
+      with:
+        token: ${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN }}
 
-  grant-k8s-repo-permissions:
-    needs: [create-k8s-repo,format_prj_coode]
-    name: 'Granting permissions to repo'
-    runs-on: ubuntu-latest  
-    env:
-      PROJECT_CODE_UPPERCASE: ${{ needs.format_prj_coode.outputs.prj_code_upper }}
+  build:
+    runs-on: ubuntu-latest
     steps:
-    - name: Creating 
-      run: |
-         gh api --method PUT -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" /repos/ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-${{ env.PROJECT_CODE_UPPERCASE}}-k8s/actions/permissions/access -f "access_level=organization"
-      env:
-          GH_TOKEN: "${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN  }}"
+      - uses: actions/checkout@v3
+      - uses: nearform-actions/github-action-copy-files@v1
+        with:
+          source: ".github/workflows/TEMPLATE_configure_and_create_project.yaml"
+          destination: ".github/workflows/${{ github.event.inputs.PROJECT_CODE }}_configure_and_create_project.yaml"
+          options: |
+            {
+              "overwrite": true,
+              "flat": true
+            }
+      - name: update file and push to remote
+        run: |
+          git config --global user.name "Configure Project"
+          git config --global user.email "configure.project@atos.net"
+          git add -A
+          git commit -m "Confirmation of project configuration"
+          git push
+
+
+
+
