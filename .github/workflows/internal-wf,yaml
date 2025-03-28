@@ -1,4 +1,4 @@
-name: Caller-Wrokflow
+name: Internal
 on:
   workflow_dispatch:
     inputs:
