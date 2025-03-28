@@ -1,0 +1,28 @@
+name: Configure And Create Projects for JRQ
+on:
+  workflow_dispatch:
+    inputs:
+      PROJECT_CODE:
+        description: 'Project Code: (Example: demo)'
+        required: true
+        default: ""
+        type: text
+
+jobs: 
+  call-workflow-base:
+    name: 'Calling the external BASE workflow to configure and create the project'
+    uses: ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-JRQ-base/.github/workflows/mandatory-project-configuration.yaml@main
+    with:
+      PROJECT_CODE: ${{ github.event.inputs.PROJECT_CODE }}
+  call-workflow-frontend:
+    needs: [call-workflow-base]
+    name: 'Calling the external FRONTEND+AKS workflow to configure and create the project'
+    uses: ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-JRQ-frontend-aks/.github/workflows/mandatory-project-configuration.yaml@main
+    with:
+      PROJECT_CODE: ${{ github.event.inputs.PROJECT_CODE }}
+  call-workflow-k8s:
+    needs: [call-workflow-frontend]
+    name: 'Calling the external K8S workflow to configure and create the project'
+    uses: ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-JRQ-k8s/.github/workflows/mandatory-project-configuration.yaml@main
+    with:
+      PROJECT_CODE: ${{ github.event.inputs.PROJECT_CODE }}
