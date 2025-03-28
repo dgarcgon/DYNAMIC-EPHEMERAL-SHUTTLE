@@ -10,7 +10,7 @@ jobs:
     - name: Load from file
       uses: cardinalby/export-env-action@v1
       with:
-        envFile: 'constants.env'    
+        envFile: constants.env
         expand: 'true'
       
 # env.PROTOCOL == 'https'
