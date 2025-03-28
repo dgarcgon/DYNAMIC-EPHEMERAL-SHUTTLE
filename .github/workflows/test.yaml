@@ -25,6 +25,8 @@ jobs:
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN }}
       - name: Checking file existence
         id: check_files
         uses: andstor/file-existence-action@v3
@@ -47,7 +49,13 @@ jobs:
               "flat": false,
               "rename": "params/${{ env.PROJECT_CODE_UPPERCASE}}_params.env"
             }
-
+      - name: Push to remote
+        run: |
+          git config --global user.name "Configure Project"
+          git config --global user.email "configure.project@atos.net"
+          git add -A
+          git commit -m "Generation parameters file"
+          git push
             
 #        run: |
 #          echo "FILE EXISTS"
