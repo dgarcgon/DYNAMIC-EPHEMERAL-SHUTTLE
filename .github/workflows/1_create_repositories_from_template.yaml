@@ -37,7 +37,7 @@ jobs:
           GH_TOKEN: "${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN  }}"
 
   grant-k8s-repo-permissions:
-    needs: [create-k8s-repo]
+    needs: [create-k8s-repo,format_prj_coode]
     name: 'Granting permissions to repo'
     runs-on: ubuntu-latest  
     env:
