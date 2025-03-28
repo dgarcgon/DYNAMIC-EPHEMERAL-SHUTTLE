@@ -1,4 +1,4 @@
-name: Configure And Create Projects for VAR_TEMPLATE_PROJECT_CODE_UPPERCASE
+name: Configur/Create VAR_TEMPLATE_PROJECT_CODE_UPPERCASE
 on:
   workflow_dispatch:
     inputs:
