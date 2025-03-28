@@ -1,4 +1,4 @@
-name: Print variables from another workflow
+name: Test
 on:
   workflow_dispatch:
 
