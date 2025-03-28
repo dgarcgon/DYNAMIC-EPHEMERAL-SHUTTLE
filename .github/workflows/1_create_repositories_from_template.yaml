@@ -32,9 +32,9 @@ jobs:
     steps:
     - name: Creating 
       run: |
-         gh repo create ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-${{ env.PROJECT_CODE_UPPERCASE}}-base --private --template ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-DAJ-base
-         gh repo create ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-${{ env.PROJECT_CODE_UPPERCASE}}-frontend-aks --private --template ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-DAJ-frontend-aks
-         gh repo create ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-${{ env.PROJECT_CODE_UPPERCASE}}-k8s --private --template ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-DAJ-k8s
+         gh repo create ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-${{ env.PROJECT_CODE_UPPERCASE}}-base --private --template ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-TEMPLATE-base
+         gh repo create ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-${{ env.PROJECT_CODE_UPPERCASE}}-frontend-aks --private --template ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-TEMPLATE-frontend-aks
+         gh repo create ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-${{ env.PROJECT_CODE_UPPERCASE}}-k8s --private --template ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-TEMPLATE-k8s
 
       env:
           GH_TOKEN: "${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN  }}"
