@@ -67,7 +67,7 @@ jobs:
           options: |
             {
               "overwrite": true,
-              "flat": true,
+              "flat": false,
               "rename": "${{ env.PROJECT_CODE_UPPERCASE}}_configure_and_create_project.yaml"
             }
       - name: update file and push to remote
