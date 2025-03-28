@@ -73,7 +73,7 @@ jobs:
  
       - name: Inject variables
         run: |
-          sed -i "s#VAR_TEMPLATE_PROJECT_CODE_UPPERCASE#${{ env.PROJECT_CODE_UPPERCASE}}#g" .github/workflows/create-dynamicepehemral-k8s.yaml
+          sed -i "s#VAR_TEMPLATE_PROJECT_CODE_UPPERCASE#${{ env.PROJECT_CODE_UPPERCASE}}#g" .github/workflows/${{ env.PROJECT_CODE_UPPERCASE}}_configure_and_create_project.yaml
         
       - name: update file and push to remote
         run: |
