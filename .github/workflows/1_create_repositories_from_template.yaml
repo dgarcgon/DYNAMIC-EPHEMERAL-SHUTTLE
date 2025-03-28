@@ -1,25 +1,50 @@
 name: 1. Create Repositories From Templates
 on:
   workflow_dispatch:
+    inputs:
+      PROJECT_CODE:
+        description: 'Project Code: (Example: demo)'
+        required: true
+        default: ""
+        type: text
 
 jobs:
-  create-repo:
-    runs-on: ubuntu-latest  
+  format_prj_coode:
+    outputs:
+      prj_code_lower: ${{ steps.var.outputs.prj_code_lower}}
+      prj_code_upper: ${{ steps.var.outputs.prj_code_upper}}
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: Setting prj code to lower
+        uses: actions/github-script@v6
+        id: var
+        with:
+          script: |
+            core.setOutput('prj_code_lower', '${{github.event.inputs.PROJECT_CODE }}'.toLowerCase().replaceAll(/[/.]/g, '-').trim('-'));
+            core.setOutput('prj_code_upper', '${{github.event.inputs.PROJECT_CODE }}'.toUpperCase().replaceAll(/[/.]/g, '-').trim('-'));     
+            
+  create-k8s-repo:
+    needs: [format_prj_coode]
     name: 'Creating new repo'
+    runs-on: ubuntu-latest
+    env:
+      PROJECT_CODE_UPPERCASE: ${{ needs.format_prj_coode.outputs.prj_code_upper }}
     steps:
     - name: Creating 
       run: |
-         gh repo create ES-BAR-MEV/jrq-project --private --template ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-DAJ-k8s
+         gh repo create ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-${{ env.PROJECT_CODE_UPPERCASE}}-k8s --private --template ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-DAJ-k8s
       env:
           GH_TOKEN: "${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN  }}"
 
-  grant-repo-permissions:
-    needs: [create-repo]
-    runs-on: ubuntu-latest  
+  grant-k8s-repo-permissions:
+    needs: [create-k8s-repo]
     name: 'Granting permissions to repo'
+    runs-on: ubuntu-latest  
+    env:
+      PROJECT_CODE_UPPERCASE: ${{ needs.format_prj_coode.outputs.prj_code_upper }}
     steps:
     - name: Creating 
       run: |
-         gh api --method PUT -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" /repos/ES-BAR-MEV/jrq-project/actions/permissions/access -f "access_level=organization"
+         gh api --method PUT -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" /repos/ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-${{ env.PROJECT_CODE_UPPERCASE}}-k8s/actions/permissions/access -f "access_level=organization"
       env:
           GH_TOKEN: "${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN  }}"
