@@ -18,9 +18,6 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       thefile: ${{ steps.file_exists.outputs.value }}
-    env:
-      PROJECT_CODE_LOWERCASE: jrq
-      PROJECT_CODE_UPPERCASE: JRQ
     strategy:
       matrix:
         value: ${{fromJSON(needs.setup.outputs.matrix)}}
@@ -36,7 +33,6 @@ jobs:
         if: steps.check_files.outputs.files_exists != 'true'
         run: |
           echo "FILE DOES NOT EXISTS"
-#          exit 1
       - name: File exists
         id: file_exists
         if: steps.check_files.outputs.files_exists == 'true'
@@ -48,30 +44,37 @@ jobs:
     steps:
       - run: |
           echo "${{ needs.build.outputs.thefile }}"
-          
-#        uses: nearform-actions/github-action-copy-files@v1.2.2
-#        with:
-#          source: "${{ matrix.value }}"
-#          destination: "."
-#          options: |
-#            {
-#              "overwrite": true,
-#              "flat": false,
-#              "rename": "${{ env.PROJECT_CODE_UPPERCASE}}_params.env"
-#            }
-#      - name: Push to remote
-#        run: |
-#          git config --global user.name "Configure Project"
-#          git config --global user.email "configure.project@atos.net"
-#          git add -A
-#          git commit -m "Generation parameters file"
-#          git push
-            
-#        run: |
-#          echo "FILE EXISTS"
-#      - run: |
-#          echo "${{ matrix.value }}"
 
+
+  get_parameters:
+    needs: [ build ]
+    runs-on: ubuntu-latest
+    env:
+      PROJECT_CODE_LOWERCASE: jrq
+      PROJECT_CODE_UPPERCASE: JRQ
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v3
+        with:
+          token: ${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN }}
+      - uses: nearform-actions/github-action-copy-files@v1.2.2
+          with:
+            source: "${{ needs.build.outputs.thefile }}"
+            destination: "."
+            options: |
+              {
+                "overwrite": true,
+                "flat": false,
+                "rename": "${{ env.PROJECT_CODE_UPPERCASE}}_params.env"
+              }
+      - name: Push to remote
+        run: |
+          git config --global user.name "Configure Project"
+          git config --global user.email "configure.project@atos.net"
+          git add -A
+          git commit -m "Generation parameters file"
+          git push
+            
 
   load-env-vars:
     name: 'Load env vars'
