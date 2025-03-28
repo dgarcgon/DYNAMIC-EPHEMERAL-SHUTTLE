@@ -53,7 +53,7 @@ jobs:
           GH_TOKEN: "${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN  }}"
 
   creating-deployment-workflow:
-    needs: [format_prj_coode]
+    needs: [ grant-k8s-repo-permissions, format_prj_coode]
     runs-on: ubuntu-latest
     env:
       PROJECT_CODE_LOWERCASE: ${{ needs.format_prj_coode.outputs.prj_code_lower }}
