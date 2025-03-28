@@ -1,0 +1,19 @@
+name: Print variables from another workflow
+on:
+  workflow_dispatch:
+
+jobs: 
+  load-env-vars:
+    name: 'Load env vars'
+    runs-on: ubuntu-latest
+    steps:
+    - name: Load from file
+      uses: cardinalby/export-env-action@v1
+      with:
+        envFile: 'constants.env'    
+        expand: 'true'
+      
+# env.PROTOCOL == 'https'
+# env.HOST == 'example.com'
+# env.PORT == '8080'
+# env.URI == 'https://example.com:8080'
