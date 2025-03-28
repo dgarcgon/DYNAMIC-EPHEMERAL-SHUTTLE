@@ -38,7 +38,7 @@ jobs:
 
   call-workflow-passing-data:
     needs: [grant-repo-permissions]
-    uses: .github/workflows/called-workflow.yml@main
+    uses: .github/workflows/internal-wf.yml@main
     with:
       PROJECT_CODE: ${{ github.event.inputs.PROJECT_CODE }}
 
