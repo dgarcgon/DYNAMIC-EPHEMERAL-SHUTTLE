@@ -22,6 +22,7 @@ jobs:
     - name: Creating 
       run: |
          gh repo create ES-BAR-MEV/jrq-project --private --template ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-DAJ-k8s -t ES-BAR-MEV
+         gh api --method PUT -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" /repos/ES-BAR-MEV/jrq-projec/actions/permissions/access -f "access_level=organization"
       env:
           GH_TOKEN: "${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN  }}"
 
