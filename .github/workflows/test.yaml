@@ -16,13 +16,16 @@ jobs:
   build:
     needs: [ setup ]
     runs-on: ubuntu-latest
+    env:
+      PROJECT_CODE_LOWERCASE: jrq
+      PROJECT_CODE_UPPERCASE: JRQ
     strategy:
       matrix:
         value: ${{fromJSON(needs.setup.outputs.matrix)}}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
-      - name: Checking cfg-applied.txt file existence
+      - name: Checking file existence
         id: check_files
         uses: andstor/file-existence-action@v3
         with:
@@ -34,8 +37,20 @@ jobs:
           exit 1
       - name: File exists
         if: steps.check_files.outputs.files_exists == 'true'
-        run: |
-          echo "FILE DOES NOT EXISTS"
+        uses: nearform-actions/github-action-copy-files@v1.2.2
+        with:
+          source: "${{ matrix.value }}"
+          destination: "."
+          options: |
+            {
+              "overwrite": true,
+              "flat": false,
+              "rename": "params/${{ env.PROJECT_CODE_UPPERCASE}}_params.env"
+            }
+
+            
+#        run: |
+#          echo "FILE EXISTS"
 #      - run: |
 #          echo "${{ matrix.value }}"
 
