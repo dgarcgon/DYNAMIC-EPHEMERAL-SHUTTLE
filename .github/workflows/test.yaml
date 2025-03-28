@@ -47,7 +47,7 @@ jobs:
             {
               "overwrite": true,
               "flat": false,
-              "rename": "params/${{ env.PROJECT_CODE_UPPERCASE}}_params.env"
+              "rename": "${{ env.PROJECT_CODE_UPPERCASE}}_params.env"
             }
       - name: Push to remote
         run: |
