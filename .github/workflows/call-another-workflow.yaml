@@ -8,13 +8,22 @@ on:
         default: ""
         type: text
 
+#jobs:
+#  call-workflow-passing-data:
+#    uses: ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-DAJ-k8s/.github/workflows/called-workflow.yml@main
+#    with:
+#      PROJECT_CODE: ${{ github.event.inputs.PROJECT_CODE }}
+
 jobs:
-  call-workflow-passing-data:
-    uses: ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-DAJ-k8s/.github/workflows/called-workflow.yml@main
-    with:
-      PROJECT_CODE: ${{ github.event.inputs.PROJECT_CODE }}
-
-
+  configure-project:
+    runs-on: ubuntu-latest  
+    name: 'New repo'
+    steps:
+    - name: Creating 
+      run: |
+         gh repo create my-project --private --template ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-DAJ-k8s
+      env:
+          GH_TOKEN: "${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN  }}"
 
 #clone it
 #as commented remove the .git folder
