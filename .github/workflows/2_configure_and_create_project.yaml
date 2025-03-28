@@ -57,5 +57,5 @@ jobs:
 
   deploy:
     needs: prepare
-    uses: ".github/workflows/dynamic.yml"
+    uses: ".github/workflows/dynamic.yml@main"
     secrets: inherit
