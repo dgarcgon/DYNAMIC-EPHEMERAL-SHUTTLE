@@ -58,15 +58,15 @@ jobs:
         with:
           token: ${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN }}
       - uses: nearform-actions/github-action-copy-files@v1.2.2
-          with:
-            source: "${{ needs.build.outputs.thefile }}"
-            destination: "."
-            options: |
-              {
-                "overwrite": true,
-                "flat": false,
-                "rename": "${{ env.PROJECT_CODE_UPPERCASE}}_params.env"
-              }
+        with:
+          source: "${{ needs.build.outputs.thefile }}"
+          destination: "."
+          options: |
+            {
+              "overwrite": true,
+              "flat": false,
+              "rename": "${{ env.PROJECT_CODE_UPPERCASE}}_params.env"
+            }
       - name: Push to remote
         run: |
           git config --global user.name "Configure Project"
