@@ -15,9 +15,20 @@ on:
 #      PROJECT_CODE: ${{ github.event.inputs.PROJECT_CODE }}
 
 jobs:
-  configure-project:
+  create-repo:
     runs-on: ubuntu-latest  
-    name: 'New repo'
+    name: 'Creating new repo'
+    steps:
+    - name: Creating 
+      run: |
+         gh repo create ES-BAR-MEV/jrq-project --private --template ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-DAJ-k8s
+      env:
+          GH_TOKEN: "${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN  }}"
+
+  grant-repo-permissions:
+    needs: [create-repo]
+    runs-on: ubuntu-latest  
+    name: 'Granting permissions to repo'
     steps:
     - name: Creating 
       run: |
@@ -25,13 +36,11 @@ jobs:
       env:
           GH_TOKEN: "${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN  }}"
 
-#         gh repo create ES-BAR-MEV/jrq-project --private --template ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-DAJ-k8s
-
-
-#  call-workflow-passing-data:
-#    uses: ES-BAR-MEV/jrq-project/.github/workflows/called-workflow.yml@main
-#    with:
-#      PROJECT_CODE: ${{ github.event.inputs.PROJECT_CODE }}
+  call-workflow-passing-data:
+    needs: [grant-repo-permissions]
+    uses: ES-BAR-MEV/jrq-project/.github/workflows/called-workflow.yml@main
+    with:
+      PROJECT_CODE: ${{ github.event.inputs.PROJECT_CODE }}
 
 
 #clone it
