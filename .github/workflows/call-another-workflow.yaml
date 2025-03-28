@@ -21,7 +21,7 @@ jobs:
     steps:
     - name: Creating 
       run: |
-         gh api --method PUT -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" /ES-BAR-MEV/jrq-project -f "access_level=organization"
+         gh api --method PUT -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" /repos/ES-BAR-MEV/jrq-project/actions/permissions/access -f "access_level=organization"
       env:
           GH_TOKEN: "${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN  }}"
 
