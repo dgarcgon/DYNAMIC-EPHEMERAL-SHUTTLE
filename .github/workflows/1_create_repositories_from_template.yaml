@@ -62,7 +62,8 @@ jobs:
       with:
         token: ${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN }}
 
-  build:
+  copy-file:
+    needs: [configure-project]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
