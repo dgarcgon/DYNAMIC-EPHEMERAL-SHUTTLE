@@ -7,10 +7,11 @@ jobs:
     name: 'Load env vars'
     runs-on: ubuntu-latest
     steps:
+    - uses: actions/checkout@v4
     - name: Load from file
       uses: cardinalby/export-env-action@v1
       with:
-        envFile: '.github/workflows/constants.env'
+        envFile: 'params/01_params.env'
         expand: 'true'
       
 # env.PROTOCOL == 'https'
