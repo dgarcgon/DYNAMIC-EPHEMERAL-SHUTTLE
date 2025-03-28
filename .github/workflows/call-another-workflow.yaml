@@ -22,3 +22,5 @@ jobs:
     - name: Creating 
       run: |
          gh repo create jrq-test --template="ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-DAJ-k8s"
+      env:
+          GH_TOKEN: ${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN  }}
