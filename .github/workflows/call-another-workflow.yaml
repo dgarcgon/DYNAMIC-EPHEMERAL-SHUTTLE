@@ -21,7 +21,7 @@ jobs:
     steps:
     - name: Creating 
       run: |
-         gh repo create ES-BAR-MEV/jrq-project --private --template ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-DAJ-k8s
+         gh repo create ES-BAR-MEV/jrq-project --private --template ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-DAJ-k8s -t ES-BAR-MEV
       env:
           GH_TOKEN: "${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN  }}"
 
