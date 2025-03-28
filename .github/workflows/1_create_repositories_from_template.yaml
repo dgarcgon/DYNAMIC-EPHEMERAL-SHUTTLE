@@ -67,7 +67,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: nearform-actions/github-action-copy-files@latest
+      - uses: nearform-actions/github-action-copy-files@v1.2.2
         with:
           source: ".github/workflows/TEMPLATE_configure_and_create_project.yaml"
           destination: ".github/workflows/${{ github.event.inputs.PROJECT_CODE }}_configure_and_create_project.yaml"
