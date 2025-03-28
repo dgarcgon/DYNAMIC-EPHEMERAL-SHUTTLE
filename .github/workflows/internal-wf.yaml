@@ -1,6 +1,6 @@
 name: Internal
 on:
-  workflow_dispatch:
+  workflow_call:
     inputs:
       PROJECT_CODE:
         description: 'Project Code: (Example: demo)'
