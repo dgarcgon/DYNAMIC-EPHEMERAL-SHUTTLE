@@ -1,0 +1,17 @@
+name: Print variables from another workflow
+on:
+  workflow_call:
+    inputs:
+      PROJECT_CODE:
+        required: true
+        type: string
+
+jobs:
+  configure-project:
+    runs-on: ubuntu-latest  
+    name: 'Print'
+    steps:
+    - name: Echo variables 
+      run: |
+         echo ${{ github.event.inputs.PROJECT_CODE }}
+         echo 'He sido llamado porque soy k8s'
