@@ -50,8 +50,11 @@ jobs:
 #          GH_TOKEN: "${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN  }}"
 
   copy-file:
-    needs: [configure-project]
+    needs: [format_prj_coode]
     runs-on: ubuntu-latest
+    env:
+      PROJECT_CODE_LOWERCASE: ${{ needs.format_prj_coode.outputs.prj_code_lower }}
+      PROJECT_CODE_UPPERCASE: ${{ needs.format_prj_coode.outputs.prj_code_upper }}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
@@ -60,7 +63,7 @@ jobs:
       - uses: nearform-actions/github-action-copy-files@v1.2.2
         with:
           source: ".github/workflows/TEMPLATE_configure_and_create_project.yaml"
-          destination: ".github/workflows/${{ github.event.inputs.PROJECT_CODE }}_configure_and_create_project.yaml"
+          destination: ".github/workflows/${{ env.PROJECT_CODE_UPPERCASE}}_configure_and_create_project.yaml"
           options: |
             {
               "overwrite": true,
