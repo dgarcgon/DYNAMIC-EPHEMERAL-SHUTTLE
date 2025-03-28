@@ -67,7 +67,8 @@ jobs:
           options: |
             {
               "overwrite": true,
-              "flat": true
+              "flat": true,
+              rename: 'new-name'
             }
       - name: update file and push to remote
         run: |
