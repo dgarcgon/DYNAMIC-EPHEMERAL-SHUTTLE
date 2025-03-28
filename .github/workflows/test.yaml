@@ -27,11 +27,15 @@ jobs:
         uses: andstor/file-existence-action@v3
         with:
           files:  '${{ matrix.value }}'
-      - name: Configuration is done
+      - name: File doe snot exists
+        if: steps.check_files.outputs.files_exists != 'true'
+        run: |
+          echo "FILE DOES NOT EXISTS"
+          exit 1
+      - name: File exists
         if: steps.check_files.outputs.files_exists == 'true'
         run: |
-          echo "THE PROJECT IS CURRENTLY CONFIGURED"
-          exit 1
+          echo "FILE DOES NOT EXISTS"
 #      - run: |
 #          echo "${{ matrix.value }}"
 
