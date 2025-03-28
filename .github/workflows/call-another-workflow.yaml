@@ -23,7 +23,7 @@ jobs:
       run: |
          git clone git@github.com:ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-DAJ-k8s.git
       env:
-          GH_TOKEN: ${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN  }}
+          GH_TOKEN: "${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN  }}"
 
 
 #clone it
