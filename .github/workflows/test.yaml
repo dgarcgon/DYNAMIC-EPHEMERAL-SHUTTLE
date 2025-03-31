@@ -109,12 +109,15 @@ jobs:
     needs: [setup_parameters]
     name: 'Load env vars'
     runs-on: ubuntu-latest
+    env:
+      PROJECT_CODE_LOWERCASE: ${{ needs.format_prj_coode.outputs.prj_code_lower }}
+      PROJECT_CODE_UPPERCASE: ${{ needs.format_prj_coode.outputs.prj_code_upper }}
     steps:
     - uses: actions/checkout@v4
     - name: Load from file
       uses: cardinalby/export-env-action@v1
       with:
-        envFile: 'params/01_params.env'
+        envFile: 'params/${{ env.PROJECT_CODE_UPPERCASE}}_params.env'
         expand: 'true'
     - name: Check noExport result
       run: |
