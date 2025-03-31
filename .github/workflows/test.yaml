@@ -3,24 +3,24 @@ on:
   workflow_dispatch:
 
 jobs: 
-  setup:
+  array_file_names:
     runs-on: ubuntu-latest
     outputs:
       matrix: ${{ steps.matrix.outputs.value }}
     steps:
       - id: matrix
         run: |
-          echo "value=[\"cfg-applied.txt\", \"params/01_params.env\", \"params/02_params.env\"]" >> $GITHUB_OUTPUT
+          echo "value=[\"params/01_params.env\",\"params/02_params.env\",\"params/03_params.env\",\"params/04_params.env\",\"params/05_params.env\",\"params/06_params.env\",\"params/07_params.env\",\"params/08_params.env\",\"params/09_params.env\",\"params/10_params.env\",]" >> $GITHUB_OUTPUT
       - run: |
           echo "${{ steps.matrix.outputs.value }}"
-  build:
-    needs: [ setup ]
+  define_next_parameter_file:
+    needs: [ array_file_names ]
     runs-on: ubuntu-latest
     outputs:
-      thefile: ${{ steps.file_exists.outputs.value }}
+      thefile: ${{ define_next_parameter_file.file_exists.outputs.value }}
     strategy:
       matrix:
-        value: ${{fromJSON(needs.setup.outputs.matrix)}}
+        value: ${{fromJSON(array_file_names.setup.outputs.matrix)}}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
@@ -29,7 +29,7 @@ jobs:
         uses: andstor/file-existence-action@v3
         with:
           files:  '${{ matrix.value }}'
-      - name: File doe snot exists
+      - name: File does not exists
         if: steps.check_files.outputs.files_exists != 'true'
         run: |
           echo "FILE DOES NOT EXISTS"
@@ -39,15 +39,15 @@ jobs:
         run: |
           echo "value=${{ matrix.value }}" >> $GITHUB_OUTPUT
   print:
-    needs: [ build ]
+    needs: [ define_next_parameter_file ]
     runs-on: ubuntu-latest
     steps:
       - run: |
-          echo "${{ needs.build.outputs.thefile }}"
+          echo "${{ needs.define_next_parameter_file.outputs.thefile }}"
 
 
-  get_parameters:
-    needs: [ build ]
+  setup_parameters:
+    needs: [ define_next_parameter_file ]
     runs-on: ubuntu-latest
     env:
       PROJECT_CODE_LOWERCASE: jrq
