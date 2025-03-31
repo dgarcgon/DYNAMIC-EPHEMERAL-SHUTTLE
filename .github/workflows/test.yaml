@@ -1,8 +1,28 @@
 name: Test
 on:
   workflow_dispatch:
-
-jobs: 
+    inputs:
+      PROJECT_CODE:
+        description: 'Project Code: (Example: demo)'
+        required: true
+        default: ""
+        type: text
+        
+jobs:
+  format_prj_coode:
+    outputs:
+      prj_code_lower: ${{ steps.var.outputs.prj_code_lower}}
+      prj_code_upper: ${{ steps.var.outputs.prj_code_upper}}
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: Setting prj code to lower
+        uses: actions/github-script@v6
+        id: var
+        with:
+          script: |
+            core.setOutput('prj_code_lower', '${{github.event.inputs.PROJECT_CODE }}'.toLowerCase().replaceAll(/[/.]/g, '-').trim('-'));
+            core.setOutput('prj_code_upper', '${{github.event.inputs.PROJECT_CODE }}'.toUpperCase().replaceAll(/[/.]/g, '-').trim('-'));    
+            
   array_file_names:
     runs-on: ubuntu-latest
     outputs:
@@ -47,30 +67,18 @@ jobs:
 
 
   setup_parameters:
-    needs: [ define_next_parameter_file ]
+    needs: [ define_next_parameter_file, format_prj_coode ]
     runs-on: ubuntu-latest
     env:
-      PROJECT_CODE_LOWERCASE: jrq
-      PROJECT_CODE_UPPERCASE: JRQ
+      PROJECT_CODE_LOWERCASE: ${{ needs.format_prj_coode.outputs.prj_code_lower }}
+      PROJECT_CODE_UPPERCASE: ${{ needs.format_prj_coode.outputs.prj_code_upper }}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
         with:
           token: ${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN }}
-#      - uses: nearform-actions/github-action-copy-files@v1.2.2
-#        with:
-#          source: "${{ needs.define_next_parameter_file.outputs.thefile }}"
-#          destination: "."
-#          options: |
-#            {
-#              "overwrite": true,
-#              "flat": false,
-#              "rename": "${{ env.PROJECT_CODE_UPPERCASE}}_params.env"
-#            }
-
       - name: Rename file 
         run: mv ${{ needs.define_next_parameter_file.outputs.thefile }} "params/${{ env.PROJECT_CODE_UPPERCASE}}_params.env"
-        
       - name: Push to remote
         run: |
           git config --global user.name "Configure Project"
@@ -78,8 +86,11 @@ jobs:
           git add -A
           git commit -m "Generation parameters file"
           git push
-            
+      - name: Inject variables
+        run: |
+          sed -i "s#VAR_TEMPLATE_PROJECT_CODE_LOWERCASE#${{ env.PROJECT_CODE_LOWERCASE}}#g" params/${{ env.PROJECT_CODE_UPPERCASE}}_params.env
 
+            
   load-env-vars:
     needs: [setup_parameters]
     name: 'Load env vars'
