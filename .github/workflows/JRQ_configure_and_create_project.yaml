@@ -46,7 +46,7 @@ jobs:
           token: ${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN }}
       - name: File exists
         run: |
-          echo "params/find_next_file.sh ${{ env.PROJECT_CODE_UPPERCASE}}"
+          echo "params/find_next_conf.sh ${{ env.PROJECT_CODE_UPPERCASE}}"
       - name: Push to remote
         run: |
           git config --global user.name "Configure Project"
