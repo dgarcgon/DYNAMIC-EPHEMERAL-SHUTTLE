@@ -79,6 +79,9 @@ jobs:
           token: ${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN }}
       - name: Rename file 
         run: mv ${{ needs.define_next_parameter_file.outputs.thefile }} "params/${{ env.PROJECT_CODE_UPPERCASE}}_params.env"
+      - name: Inject variables
+        run: |
+          sed -i "s#VAR_TEMPLATE_PROJECT_CODE_LOWERCASE#${{ env.PROJECT_CODE_LOWERCASE}}#g" params/${{ env.PROJECT_CODE_UPPERCASE}}_params.env
       - name: Push to remote
         run: |
           git config --global user.name "Configure Project"
@@ -86,11 +89,7 @@ jobs:
           git add -A
           git commit -m "Generation parameters file"
           git push
-      - name: Inject variables
-        run: |
-          sed -i "s#VAR_TEMPLATE_PROJECT_CODE_LOWERCASE#${{ env.PROJECT_CODE_LOWERCASE}}#g" params/${{ env.PROJECT_CODE_UPPERCASE}}_params.env
 
-            
   load-env-vars:
     needs: [setup_parameters]
     name: 'Load env vars'
