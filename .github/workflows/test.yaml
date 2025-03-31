@@ -69,7 +69,7 @@ jobs:
 #            }
 
       - name: Rename file 
-        run: mv ${{ needs.define_next_parameter_file.outputs.thefile }} ${{ env.PROJECT_CODE_UPPERCASE}}_params.env
+        run: mv ${{ needs.define_next_parameter_file.outputs.thefile }} "params/${{ env.PROJECT_CODE_UPPERCASE}}_params.env"
         
       - name: Push to remote
         run: |
