@@ -57,16 +57,20 @@ jobs:
         uses: actions/checkout@v3
         with:
           token: ${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN }}
-      - uses: nearform-actions/github-action-copy-files@v1.2.2
-        with:
-          source: "${{ needs.define_next_parameter_file.outputs.thefile }}"
-          destination: "."
-          options: |
-            {
-              "overwrite": true,
-              "flat": false,
-              "rename": "${{ env.PROJECT_CODE_UPPERCASE}}_params.env"
-            }
+#      - uses: nearform-actions/github-action-copy-files@v1.2.2
+#        with:
+#          source: "${{ needs.define_next_parameter_file.outputs.thefile }}"
+#          destination: "."
+#          options: |
+#            {
+#              "overwrite": true,
+#              "flat": false,
+#              "rename": "${{ env.PROJECT_CODE_UPPERCASE}}_params.env"
+#            }
+
+      - name: Rename file 
+        run: mv ${{ needs.define_next_parameter_file.outputs.thefile }} ${{ env.PROJECT_CODE_UPPERCASE}}_params.env
+        
       - name: Push to remote
         run: |
           git config --global user.name "Configure Project"
