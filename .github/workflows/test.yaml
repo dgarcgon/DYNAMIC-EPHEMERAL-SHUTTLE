@@ -81,6 +81,7 @@ jobs:
             
 
   load-env-vars:
+    needs: [setup_parameters]
     name: 'Load env vars'
     runs-on: ubuntu-latest
     steps:
