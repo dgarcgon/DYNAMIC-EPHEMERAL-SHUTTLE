@@ -54,7 +54,7 @@ jobs:
           exit 1
 
   load-env-vars:
-    needs: [check-if-configured]
+    needs: [check-if-configured,format_prj_coode]
     name: 'Load env vars'
     runs-on: ubuntu-latest
     outputs:
