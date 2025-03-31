@@ -139,5 +139,7 @@ jobs:
     uses: ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-JRQ-base/.github/workflows/mandatory-project-configuration.yaml@main
     with:
       PROJECT_CODE: ${{needs.load-env-vars.steps.prueba.outputs.mivalor}}
+      VNET_SUPERNET: ${{needs.load-env-vars.steps.prueba.outputs.mivalor}}
+      SUBNETS_COMMON_IP: ${{needs.load-env-vars.steps.prueba.outputs.mivalor}}
 
 
