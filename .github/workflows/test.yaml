@@ -17,10 +17,10 @@ jobs:
     needs: [ array_file_names ]
     runs-on: ubuntu-latest
     outputs:
-      thefile: ${{ define_next_parameter_file.file_exists.outputs.value }}
+      thefile: ${{ step.file_exists.outputs.value }}
     strategy:
       matrix:
-        value: ${{fromJSON(array_file_names.setup.outputs.matrix)}}
+        value: ${{fromJSON(needs.array_file_names.outputs.matrix)}}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
