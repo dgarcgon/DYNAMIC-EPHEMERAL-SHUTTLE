@@ -35,6 +35,7 @@ jobs:
             
 
   define_next_parameter_file:
+    needs: [format_prj_coode]
     runs-on: ubuntu-latest
     env:
       PROJECT_CODE_LOWERCASE: ${{ needs.format_prj_coode.outputs.prj_code_lower }}
@@ -46,7 +47,7 @@ jobs:
           token: ${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN }}
       - name: File exists
         run: |
-          echo "params/find_next_conf.sh ${{ env.PROJECT_CODE_UPPERCASE}}"
+          echo "params/find_next_conf.sh ${{ env.PROJECT_CODE_UPPERCASE }}"
       - name: Push to remote
         run: |
           git config --global user.name "Configure Project"
