@@ -2,11 +2,6 @@ name: Configur/Create VAR_TEMPLATE_PROJECT_CODE_UPPERCASE
 on:
   workflow_dispatch:
     inputs:
-      PROJECT_CODE:
-        description: 'Project Code: (Example: demo)'
-        required: true
-        default: ""
-        type: text
       KEYCLOAK_ARGOCD_CLIENT_SECRET:
         description: 'Keycloak ArgoCD client secret'
         required: true
@@ -35,8 +30,8 @@ jobs:
         id: var
         with:
           script: |
-            core.setOutput('prj_code_lower', '${{github.event.inputs.PROJECT_CODE }}'.toLowerCase().replaceAll(/[/.]/g, '-').trim('-'));
-            core.setOutput('prj_code_upper', '${{github.event.inputs.PROJECT_CODE }}'.toUpperCase().replaceAll(/[/.]/g, '-').trim('-'));    
+            core.setOutput('prj_code_lower', 'VAR_TEMPLATE_PROJECT_CODE_UPPERCASE'.toLowerCase().replaceAll(/[/.]/g, '-').trim('-'));
+            core.setOutput('prj_code_upper', 'VAR_TEMPLATE_PROJECT_CODE_UPPERCASE'.toUpperCase().replaceAll(/[/.]/g, '-').trim('-'));    
             
   array_file_names:
     runs-on: ubuntu-latest
