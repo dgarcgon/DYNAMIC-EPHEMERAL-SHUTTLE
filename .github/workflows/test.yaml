@@ -17,7 +17,7 @@ jobs:
     needs: [ array_file_names ]
     runs-on: ubuntu-latest
     outputs:
-      thefile: ${{ step.file_exists.outputs.value }}
+      thefile: ${{ steps.file_exists.outputs.value }}
     strategy:
       matrix:
         value: ${{fromJSON(needs.array_file_names.outputs.matrix)}}
