@@ -38,6 +38,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       thefile: ${{ steps.file_exists.outputs.value }}
+      count:  ${{ steps.file_exists.outputs.count }}
     strategy:
       matrix:
         value: ${{fromJSON(needs.array_file_names.outputs.matrix)}}
@@ -55,10 +56,10 @@ jobs:
           echo "FILE DOES NOT EXISTS"
       - name: File exists
         id: file_exists
-        if: steps.check_files.outputs.files_exists == 'true'
+        if: steps.check_files.outputs.files_exists == 'true' and steps.check_files.outputs.files_exists != "1"
         run: |
           echo "value=${{ matrix.value }}" >> $GITHUB_OUTPUT
-          exit 1
+          echo "count=1" >> $GITHUB_OUTPUT
   print:
     needs: [ define_next_parameter_file ]
     runs-on: ubuntu-latest
