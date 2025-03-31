@@ -104,6 +104,8 @@ jobs:
     needs: [setup_parameters]
     name: 'Load env vars'
     runs-on: ubuntu-latest
+    outputs:
+      thefile: ${{ steps.prueba.outputs.mivalor }}
     env:
       PROJECT_CODE_LOWERCASE: ${{ needs.format_prj_coode.outputs.prj_code_lower }}
       PROJECT_CODE_UPPERCASE: ${{ needs.format_prj_coode.outputs.prj_code_upper }}
@@ -115,6 +117,7 @@ jobs:
         envFile: 'params/${{ env.PROJECT_CODE_UPPERCASE}}_params.env'
         expand: 'true'
     - name: Check noExport result
+      id: prueba
       run: |
         echo "env.PROJECT_CODE: '${{env.PROJECT_CODE}}'" 
         echo "env.VNET_SUPERNET: '${{env.VNET_SUPERNET}}'" 
@@ -128,35 +131,13 @@ jobs:
         echo "env.KEYCLOAK_ARGOCD_CLIENT_SECRET: '${{env.KEYCLOAK_ARGOCD_CLIENT_SECRET}}'" 
         echo "env.CREATE_MSSQL_DB: '${{env.CREATE_MSSQL_DB}}'" 
         echo "env.DB_ADMIN_PWD: '${{env.DB_ADMIN_PWD}}'" 
+        echo "mivalor=${{env.PROJECT_CODE}}" >> $GITHUB_OUTPUT
 
   call-workflow-base:
     needs: [load-env-vars]
     name: 'Calling the external BASE workflow to configure and create the project'
     uses: ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-JRQ-base/.github/workflows/mandatory-project-configuration.yaml@main
     with:
-      PROJECT_CODE: ${{env.PROJECT_CODE}}
-      VNET_SUPERNET: ${{env.VNET_SUPERNET}}
-      SUBNETS_COMMON_IP: ${{env.SUBNETS_COMMON_IP}}
+      PROJECT_CODE: ${{needs.load-env-vars.steps.prueba.outputs.mivalor}}
 
-  call-workflow-frontend:
-    needs: [call-workflow-base]
-    name: 'Calling the external FRONTEND+AKS workflow to configure and create the project'
-    uses: ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-JRQ-frontend-aks/.github/workflows/mandatory-project-configuration.yaml@main
-    with:
-      PROJECT_CODE: ${{env.PROJECT_CODE}}
-      SUBNETS_APPGW_IP: ${{env.SUBNETS_APPGW_IP}}
-      SUBNETS_APPGW_PRIVATE_IP_ADDRESS: ${{env.SUBNETS_APPGW_PRIVATE_IP_ADDRESS}}
-      SUBNETS_AKS_NODE_IP: ${{env.SUBNETS_AKS_NODE_IP}}
-      NSGS_APPGW_DESTINATION_ADDRESS_PREFIX: ${{env.NSGS_APPGW_DESTINATION_ADDRESS_PREFIX}}
-      APPGW_LISTENERS_WILDCARD_BACKENDSIPS: ${{env.APPGW_LISTENERS_WILDCARD_BACKENDSIPS}}
-      
-  call-workflow-k8s:
-    needs: [call-workflow-frontend]
-    name: 'Calling the external K8S workflow to configure and create the project'
-    uses: ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-JRQ-k8s/.github/workflows/mandatory-project-configuration.yaml@main
-    with:
-      PROJECT_CODE: ${{env.PROJECT_CODE}}
-      LOAD_BALANCER_IP: ${{env.LOAD_BALANCER_IP}}
-      KEYCLOAK_ARGOCD_CLIENT_SECRET: ${{env.KEYCLOAK_ARGOCD_CLIENT_SECRET}}
-      CREATE_MSSQL_DB: ${{env.CREATE_MSSQL_DB}}
-      DB_ADMIN_PWD: ${{env.DB_ADMIN_PWD}}
+
