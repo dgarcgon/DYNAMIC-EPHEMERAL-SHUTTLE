@@ -42,7 +42,7 @@ jobs:
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
-      - name: Checking params/JRQ_params.env file existence
+      - name: Checking params/VAR_TEMPLATE_PROJECT_CODE_UPPERCASE_params.env file existence
         id: check_files
         uses: andstor/file-existence-action@v3
         with:
