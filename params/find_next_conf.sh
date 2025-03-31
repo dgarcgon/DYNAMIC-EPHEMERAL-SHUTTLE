@@ -1,6 +1,6 @@
 #!/bin/bash
  
-DIR="."
+DIR="params"
 string_a_buscar="VAR_TEMPLATE_PROJECT_CODE_LOWERCASE"
  
 FS='
