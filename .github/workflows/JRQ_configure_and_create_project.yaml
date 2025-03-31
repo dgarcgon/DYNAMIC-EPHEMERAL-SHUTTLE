@@ -119,6 +119,8 @@ jobs:
       PROJECT_CODE: ${{ needs.load-env-vars.outputs.env_PROJECT_CODE }}
       VNET_SUPERNET: ${{ needs.load-env-vars.outputs.env_VNET_SUPERNET }}
       SUBNETS_COMMON_IP: ${{ needs.load-env-vars.outputs.env_SUBNETS_COMMON_IP }}
+    secrets:
+      token: "${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN }}"
 
   call-workflow-frontend:
     needs: [call-workflow-base,load-env-vars]
