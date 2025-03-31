@@ -33,51 +33,8 @@ jobs:
             core.setOutput('prj_code_lower', 'JRQ'.toLowerCase().replaceAll(/[/.]/g, '-').trim('-'));
             core.setOutput('prj_code_upper', 'JRQ'.toUpperCase().replaceAll(/[/.]/g, '-').trim('-'));    
             
-  array_file_names:
-    runs-on: ubuntu-latest
-    outputs:
-      matrix: ${{ steps.matrix.outputs.value }}
-    steps:
-      - id: matrix
-        run: |
-          echo "value=[\"params/01_params.env\",\"params/02_params.env\",\"params/03_params.env\",\"params/04_params.env\",\"params/05_params.env\",\"params/06_params.env\",\"params/07_params.env\",\"params/08_params.env\",\"params/09_params.env\",\"params/10_params.env\",]" >> $GITHUB_OUTPUT
-      - run: |
-          echo "${{ steps.matrix.outputs.value }}"
+
   define_next_parameter_file:
-    needs: [ array_file_names ]
-    runs-on: ubuntu-latest
-    outputs:
-      thefile: ${{ steps.file_exists.outputs.value }}
-    strategy:
-      matrix:
-        value: ${{fromJSON(needs.array_file_names.outputs.matrix)}}
-    steps:
-      - name: Check out repository code
-        uses: actions/checkout@v3
-      - name: Checking file existence
-        id: check_files
-        uses: andstor/file-existence-action@v3
-        with:
-          files:  '${{ matrix.value }}'
-      - name: File does not exists
-        if: steps.check_files.outputs.files_exists != 'true'
-        run: |
-          echo "FILE DOES NOT EXISTS"
-      - name: File exists
-        id: file_exists
-        if: steps.check_files.outputs.files_exists == 'true'
-        run: |
-          echo "value=${{ matrix.value }}" >> $GITHUB_OUTPUT
-  print:
-    needs: [ define_next_parameter_file ]
-    runs-on: ubuntu-latest
-    steps:
-      - run: |
-          echo "${{ needs.define_next_parameter_file.outputs.thefile }}"
-
-
-  setup_parameters:
-    needs: [ define_next_parameter_file, format_prj_coode ]
     runs-on: ubuntu-latest
     env:
       PROJECT_CODE_LOWERCASE: ${{ needs.format_prj_coode.outputs.prj_code_lower }}
@@ -87,11 +44,9 @@ jobs:
         uses: actions/checkout@v3
         with:
           token: ${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN }}
-      - name: Rename file 
-        run: mv ${{ needs.define_next_parameter_file.outputs.thefile }} "params/${{ env.PROJECT_CODE_UPPERCASE}}_params.env"
-      - name: Inject variables
+      - name: File exists
         run: |
-          sed -i "s#VAR_TEMPLATE_PROJECT_CODE_LOWERCASE#${{ env.PROJECT_CODE_LOWERCASE}}#g" params/${{ env.PROJECT_CODE_UPPERCASE}}_params.env
+          echo "params/find_next_file.sh ${{ env.PROJECT_CODE_UPPERCASE}}"
       - name: Push to remote
         run: |
           git config --global user.name "Configure Project"
@@ -101,7 +56,7 @@ jobs:
           git push
 
   load-env-vars:
-    needs: [setup_parameters,format_prj_coode]
+    needs: [define_next_parameter_file,format_prj_coode]
     name: 'Load env vars'
     runs-on: ubuntu-latest
     outputs:
