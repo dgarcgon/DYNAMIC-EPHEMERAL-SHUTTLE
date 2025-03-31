@@ -59,7 +59,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       env_PROJECT_CODE: ${{ steps.export_var.outputs.env_PROJECT_CODE }}
-      env_VNET_SUPERNET: ${{ steps.export_var.outputs.env_VNET_SUPERNET} }}
+      env_VNET_SUPERNET: ${{ steps.export_var.outputs.env_VNET_SUPERNET }}
       env_SUBNETS_COMMON_IP: ${{ steps.export_var.outputs.env_SUBNETS_COMMON_IP }}
       env_SUBNETS_APPGW_IP: ${{ steps.export_var.outputs.env_SUBNETS_APPGW_IP }}
       env_SUBNETS_APPGW_PRIVATE_IP_ADDRESS: ${{ steps.export_var.outputs.env_SUBNETS_APPGW_PRIVATE_IP_ADDRESS }}
