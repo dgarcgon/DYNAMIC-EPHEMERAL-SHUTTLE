@@ -1,8 +1,10 @@
 #!/bin/bash
  
-DIR="params"
+DIR="params/"
 string_a_buscar="VAR_TEMPLATE_PROJECT_CODE_LOWERCASE"
- 
+
+echo $DIR
+
 FS='
 '
 for item in $(ls $DIR)
