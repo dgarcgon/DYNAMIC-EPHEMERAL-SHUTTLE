@@ -58,6 +58,7 @@ jobs:
         if: steps.check_files.outputs.files_exists == 'true'
         run: |
           echo "value=${{ matrix.value }}" >> $GITHUB_OUTPUT
+          exit 1
   print:
     needs: [ define_next_parameter_file ]
     runs-on: ubuntu-latest
