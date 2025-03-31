@@ -34,30 +34,28 @@ jobs:
             core.setOutput('prj_code_upper', 'JRQ'.toUpperCase().replaceAll(/[/.]/g, '-').trim('-'));    
             
 
-  define_next_parameter_file:
+  check-if-configured:
     needs: [format_prj_coode]
+    name: Check if project configuration is done
     runs-on: ubuntu-latest
-    env:
-      PROJECT_CODE_LOWERCASE: ${{ needs.format_prj_coode.outputs.prj_code_lower }}
-      PROJECT_CODE_UPPERCASE: ${{ needs.format_prj_coode.outputs.prj_code_upper }}
+    outputs:
+      status: ${{ steps.early.conclusion }}
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
+      - name: Checking params/JRQ_params.env file existence
+        id: check_files
+        uses: andstor/file-existence-action@v3
         with:
-          token: ${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN }}
-      - name: File exists
+          files:  'params/JRQ_params.env'
+      - name: Configuration is done
+        if: steps.check_files.outputs.files_exists != 'true'
         run: |
-          echo "params/find_next_conf.sh ${{ env.PROJECT_CODE_UPPERCASE }}"
-      - name: Push to remote
-        run: |
-          git config --global user.name "Configure Project"
-          git config --global user.email "configure.project@atos.net"
-          git add -A
-          git commit -m "Generation parameters file"
-          git push
+          echo "THE CONFIGURATION FILE JRQ_params.env DOES NOT EXISTS, PLEASE CONFIGURE IT"
+          exit 1
 
   load-env-vars:
-    needs: [define_next_parameter_file,format_prj_coode]
+    needs: [format_prj_coode, check-if-configured]
     name: 'Load env vars'
     runs-on: ubuntu-latest
     outputs:
