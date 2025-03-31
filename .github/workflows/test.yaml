@@ -130,3 +130,35 @@ jobs:
         echo "env.KEYCLOAK_ARGOCD_CLIENT_SECRET: '${{env.KEYCLOAK_ARGOCD_CLIENT_SECRET}}'" 
         echo "env.CREATE_MSSQL_DB: '${{env.CREATE_MSSQL_DB}}'" 
         echo "env.DB_ADMIN_PWD: '${{env.DB_ADMIN_PWD}}'" 
+
+  call-workflow-base:
+    needs: [load-env-vars]
+    name: 'Calling the external BASE workflow to configure and create the project'
+    uses: ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-VAR_TEMPLATE_PROJECT_CODE_UPPERCASE-base/.github/workflows/mandatory-project-configuration.yaml@main
+    with:
+      PROJECT_CODE: ${{env.PROJECT_CODE}}
+      VNET_SUPERNET: ${{env.VNET_SUPERNET}}
+      SUBNETS_COMMON_IP: ${{env.SUBNETS_COMMON_IP}}
+
+  call-workflow-frontend:
+    needs: [call-workflow-base]
+    name: 'Calling the external FRONTEND+AKS workflow to configure and create the project'
+    uses: ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-VAR_TEMPLATE_PROJECT_CODE_UPPERCASE-frontend-aks/.github/workflows/mandatory-project-configuration.yaml@main
+    with:
+      PROJECT_CODE: ${{env.PROJECT_CODE}}
+      SUBNETS_APPGW_IP: ${{env.SUBNETS_APPGW_IP}}
+      SUBNETS_APPGW_PRIVATE_IP_ADDRESS: ${{env.SUBNETS_APPGW_PRIVATE_IP_ADDRESS}}
+      SUBNETS_AKS_NODE_IP: ${{env.SUBNETS_AKS_NODE_IP}}
+      NSGS_APPGW_DESTINATION_ADDRESS_PREFIX: ${{env.NSGS_APPGW_DESTINATION_ADDRESS_PREFIX}}
+      APPGW_LISTENERS_WILDCARD_BACKENDSIPS: ${{env.APPGW_LISTENERS_WILDCARD_BACKENDSIPS}}
+      
+  call-workflow-k8s:
+    needs: [call-workflow-frontend]
+    name: 'Calling the external K8S workflow to configure and create the project'
+    uses: ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-VAR_TEMPLATE_PROJECT_CODE_UPPERCASE-k8s/.github/workflows/mandatory-project-configuration.yaml@main
+    with:
+      PROJECT_CODE: ${{env.PROJECT_CODE}}
+      LOAD_BALANCER_IP: ${{env.LOAD_BALANCER_IP}}
+      KEYCLOAK_ARGOCD_CLIENT_SECRET: ${{env.KEYCLOAK_ARGOCD_CLIENT_SECRET}}
+      CREATE_MSSQL_DB: ${{env.CREATE_MSSQL_DB}}
+      DB_ADMIN_PWD: ${{env.DB_ADMIN_PWD}}
