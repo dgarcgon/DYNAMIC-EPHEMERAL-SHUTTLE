@@ -7,7 +7,22 @@ on:
         required: true
         default: ""
         type: text
-        
+      KEYCLOAK_ARGOCD_CLIENT_SECRET:
+        description: 'Keycloak ArgoCD client secret'
+        required: true
+        default: ""
+        type: text
+      CREATE_MSSQL_DB:
+        description: 'Do you want to create a MSSql service and a default database? If yes, provide a value in the next DB admin field'
+        required: true
+        default: false
+        type: boolean
+      DB_ADMIN_PWD:
+        description: 'DB admin password'
+        required: false
+        default: ""
+        type: text
+
 jobs:
   format_prj_coode:
     outputs:
