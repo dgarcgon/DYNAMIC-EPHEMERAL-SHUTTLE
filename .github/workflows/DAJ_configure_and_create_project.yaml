@@ -80,25 +80,10 @@ jobs:
       with:
         envFile: 'params/${{ env.PROJECT_CODE_UPPERCASE}}_params.env'
         expand: 'true'
-    - name: Check values
-      run: |
-        echo "env.PROJECT_CODE: '${{env.PROJECT_CODE}}'" 
-        echo "env.VNET_SUPERNET: '${{env.VNET_SUPERNET}}'" 
-        echo "env.SUBNETS_COMMON_IP: '${{env.SUBNETS_COMMON_IP}}'" 
-        echo "env.SUBNETS_APPGW_IP: '${{env.SUBNETS_APPGW_IP}}'" 
-        echo "env.SUBNETS_APPGW_PRIVATE_IP_ADDRESS: '${{env.SUBNETS_APPGW_PRIVATE_IP_ADDRESS}}'" 
-        echo "env.SUBNETS_AKS_NODE_IP: '${{env.SUBNETS_AKS_NODE_IP}}'" 
-        echo "env.NSGS_APPGW_DESTINATION_ADDRESS_PREFIX: '${{env.NSGS_APPGW_DESTINATION_ADDRESS_PREFIX}}'" 
-        echo "env.APPGW_LISTENERS_WILDCARD_BACKENDSIPS: '${{env.APPGW_LISTENERS_WILDCARD_BACKENDSIPS}}'" 
-        echo "env.LOAD_BALANCER_IP: '${{env.LOAD_BALANCER_IP}}'" 
-        echo "env.KEYCLOAK_ARGOCD_CLIENT_SECRET: '${{env.KEYCLOAK_ARGOCD_CLIENT_SECRET}}'" 
-        echo "env.CREATE_MSSQL_DB: '${{env.CREATE_MSSQL_DB}}'" 
-        echo "env.DB_ADMIN_PWD: '${{env.DB_ADMIN_PWD}}'" 
-    
     - name: Export values
       id: export_var
       run: |
-        echo "env_PROJECT_CODE=${{env.PROJECT_CODE}}" >> $GITHUB_OUTPUT
+        echo "::set-output name=env_PROJECT_CODE::${{env.PROJECT_CODE}}"
         echo "env_VNET_SUPERNET=${{env.VNET_SUPERNET}}" >> $GITHUB_OUTPUT
         echo "env_SUBNETS_COMMON_IP=${{env.SUBNETS_COMMON_IP}}" >> $GITHUB_OUTPUT
         echo "env_SUBNETS_APPGW_IP=${{env.SUBNETS_APPGW_IP}}" >> $GITHUB_OUTPUT
@@ -110,6 +95,7 @@ jobs:
         echo "env_KEYCLOAK_ARGOCD_CLIENT_SECRET=${{env.KEYCLOAK_ARGOCD_CLIENT_SECRET}}" >> $GITHUB_OUTPUT
         echo "env_CREATE_MSSQL_DB=${{env.CREATE_MSSQL_DB}}" >> $GITHUB_OUTPUT
         echo "env_DB_ADMIN_PWD=${{env.DB_ADMIN_PWD}}"  >> $GITHUB_OUTPUT
+        
 
   call-workflow-base:
     needs: [load-env-vars]
