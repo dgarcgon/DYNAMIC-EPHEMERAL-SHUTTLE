@@ -114,7 +114,7 @@ jobs:
   call-workflow-base:
     needs: [load-env-vars]
     name: 'Calling the external BASE workflow to configure and create the project'
-    uses: ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-VAR_TEMPLATE_PROJECT_CODE_UPPERCASE-base/.github/workflows/mandatory-project-configuration.yaml@main
+    uses: ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-VAR_TEMPLATE_PROJECT_CODE_UPPERCASE-base/.github/workflows/mandatory-project-configuration-called.yaml@main
     with:
       PROJECT_CODE: ${{ needs.load-env-vars.outputs.env_PROJECT_CODE }}
       VNET_SUPERNET: ${{ needs.load-env-vars.outputs.env_VNET_SUPERNET }}
@@ -123,7 +123,7 @@ jobs:
   call-workflow-frontend:
     needs: [call-workflow-base,load-env-vars]
     name: 'Calling the external FRONTEND+AKS workflow to configure and create the project'
-    uses: ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-VAR_TEMPLATE_PROJECT_CODE_UPPERCASE-frontend-aks/.github/workflows/mandatory-project-configuration.yaml@main
+    uses: ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-VAR_TEMPLATE_PROJECT_CODE_UPPERCASE-frontend-aks/.github/workflows/mandatory-project-configuration-called.yaml@main
     with:
       PROJECT_CODE: ${{  needs.load-env-vars.outputs.env_PROJECT_CODE }}
       SUBNETS_APPGW_IP: ${{  needs.load-env-vars.outputs.env_SUBNETS_APPGW_IP }}
@@ -135,7 +135,7 @@ jobs:
   call-workflow-k8s:
     needs: [call-workflow-frontend,load-env-vars]
     name: 'Calling the external K8S workflow to configure and create the project'
-    uses: ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-VAR_TEMPLATE_PROJECT_CODE_UPPERCASE-k8s/.github/workflows/mandatory-project-configuration.yaml@main
+    uses: ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-VAR_TEMPLATE_PROJECT_CODE_UPPERCASE-k8s/.github/workflows/mandatory-project-configuration-called.yaml@main
     with:
       PROJECT_CODE: ${{  needs.load-env-vars.outputs.env_PROJECT_CODE }}
       LOAD_BALANCER_IP: ${{  needs.load-env-vars.outputs.env_.LOAD_BALANCER_IP }}
