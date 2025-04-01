@@ -124,119 +124,22 @@ jobs:
         git commit -m "Confirmation of project configuration"
         git push
 
+  push_run_creation_workflow_file:
+    needs: [load-env-vars]
+    name: 'Create and push the file run_creation_workflow'
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out repository code
+      uses: actions/checkout@v4
+      with:
+        repository: ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-JRQ-base
+        token: ${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN }}
+    - name: Create file run_creation_workflow.txt
+      run: |
+        echo "THIS REPO HAS BEEN CALLED FROM SHUTTLE WORKFLOW. DO NOT DELETE IT" >> Create file run_creation_workflow.txt
+        git config --global user.name "Configure Project"
+        git config --global user.email "configure.project@atos.net"
+        git add -A
+        git commit -m "Confirmation of project configuration"
+        git push
 
-#    - name: Export values
-#      id: export_var
-#      run: |
-#        echo "env_PROJECT_CODE=${{env.PROJECT_CODE}}" >> $GITHUB_OUTPUT
-#        echo "env_VNET_SUPERNET=${{env.VNET_SUPERNET}}" >> $GITHUB_OUTPUT
-#        echo "env_SUBNETS_COMMON_IP=${{env.SUBNETS_COMMON_IP}}" >> $GITHUB_OUTPUT
-#        echo "env_SUBNETS_APPGW_IP=${{env.SUBNETS_APPGW_IP}}" >> $GITHUB_OUTPUT
-#        echo "env_SUBNETS_APPGW_PRIVATE_IP_ADDRESS=${{env.SUBNETS_APPGW_PRIVATE_IP_ADDRESS}}" >> $GITHUB_OUTPUT
-#        echo "env_SUBNETS_AKS_NODE_IP=${{env.SUBNETS_AKS_NODE_IP}}" >> $GITHUB_OUTPUT
-#        echo "env_NSGS_APPGW_DESTINATION_ADDRESS_PREFIX=${{env.NSGS_APPGW_DESTINATION_ADDRESS_PREFIX}}" >> $GITHUB_OUTPUT
-#        echo "env_APPGW_LISTENERS_WILDCARD_BACKENDSIPS=${{env.APPGW_LISTENERS_WILDCARD_BACKENDSIPS}}" >> $GITHUB_OUTPUT
-#        echo "env_LOAD_BALANCER_IP=${{env.LOAD_BALANCER_IP}}" >> $GITHUB_OUTPUT
-#        echo "env_KEYCLOAK_ARGOCD_CLIENT_SECRET=${{env.KEYCLOAK_ARGOCD_CLIENT_SECRET}}" >> $GITHUB_OUTPUT
-#        echo "env_CREATE_MSSQL_DB=${{env.CREATE_MSSQL_DB}}" >> $GITHUB_OUTPUT
-#        echo "env_DB_ADMIN_PWD=${{env.DB_ADMIN_PWD}}"  >> $GITHUB_OUTPUT
-
-#  call-workflow-base:
-#    needs: [load-env-vars]
-#    name: 'Calling the external BASE workflow to configure and create the project'
-#    uses: ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-JRQ-base/.github/workflows/create-multiproject-base.yaml@main
-#    with:
-#      PROJECT_CODE: ${{ needs.load-env-vars.outputs.env_PROJECT_CODE }}
-#      VNET_SUPERNET: ${{ needs.load-env-vars.outputs.env_VNET_SUPERNET }}
-#      SUBNETS_COMMON_IP: ${{ needs.load-env-vars.outputs.env_SUBNETS_COMMON_IP }}
-
-#  call-workflow-frontend:
-#    needs: [call-workflow-base,load-env-vars]
-#    name: 'Calling the external FRONTEND+AKS workflow to configure and create the project'
-#    uses: ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-JRQ-frontend-aks/.github/workflows/mandatory-project-configuration-called.yaml@main
-#    with:
-#      PROJECT_CODE: ${{  needs.load-env-vars.outputs.env_PROJECT_CODE }}
-#      SUBNETS_APPGW_IP: ${{  needs.load-env-vars.outputs.env_SUBNETS_APPGW_IP }}
-#      SUBNETS_APPGW_PRIVATE_IP_ADDRESS: ${{  needs.load-env-vars.outputs.env_SUBNETS_APPGW_PRIVATE_IP_ADDRESS }}
-#      SUBNETS_AKS_NODE_IP: ${{  needs.load-env-vars.outputs.env_SUBNETS_AKS_NODE_IP }}
-#      NSGS_APPGW_DESTINATION_ADDRESS_PREFIX: ${{  needs.load-env-vars.outputs.env_NSGS_APPGW_DESTINATION_ADDRESS_PREFIX }}
-#      APPGW_LISTENERS_WILDCARD_BACKENDSIPS: ${{  needs.load-env-vars.outputs.env_APPGW_LISTENERS_WILDCARD_BACKENDSIPS }}
-      
-#  call-workflow-k8s:
-#    needs: [call-workflow-frontend,load-env-vars]
-#    name: 'Calling the external K8S workflow to configure and create the project'
-#    uses: ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-JRQ-k8s/.github/workflows/mandatory-project-configuration-called.yaml@main
-#    with:
-#      PROJECT_CODE: ${{  needs.load-env-vars.outputs.env_PROJECT_CODE }}
-#      LOAD_BALANCER_IP: ${{  needs.load-env-vars.outputs.env_.LOAD_BALANCER_IP }}
-#      KEYCLOAK_ARGOCD_CLIENT_SECRET: ${{  needs.load-env-vars.outputs.env_.KEYCLOAK_ARGOCD_CLIENT_SECRET }}
-#      CREATE_MSSQL_DB: ${{  needs.load-env-vars.outputs.env_.CREATE_MSSQL_DB }}
-#      DB_ADMIN_PWD: ${{  needs.load-env-vars.outputs.env_.DB_ADMIN_PWD }}
-
-
-#  array_file_names:
-#    runs-on: ubuntu-latest
-#    outputs:
-#      matrix: ${{ steps.matrix.outputs.value }}
-#    steps:
-#      - id: matrix
-#        run: |
-#          echo "value=[\"params/01_params.env\",\"params/02_params.env\",\"params/03_params.env\",\"params/04_params.env\",\"params/05_params.env\",\"params/06_params.env\",\"params/07_params.env\",\"params/08_params.env\",\"params/09_params.env\",\"params/10_params.env\",]" >> $GITHUB_OUTPUT
-#      - run: |
-#          echo "${{ steps.matrix.outputs.value }}"
-#  define_next_parameter_file:
-#    needs: [ array_file_names ]
-#    runs-on: ubuntu-latest
-#    outputs:
-#      thefile: ${{ steps.file_exists.outputs.value }}
-#    strategy:
-#      matrix:
-#        value: ${{fromJSON(needs.array_file_names.outputs.matrix)}}
-#    steps:
-#      - name: Check out repository code
-#        uses: actions/checkout@v3
-#      - name: Checking file existence
-#        id: check_files
-#        uses: andstor/file-existence-action@v3
-#        with:
-#          files:  '${{ matrix.value }}'
-#      - name: File does not exists
-#        if: steps.check_files.outputs.files_exists != 'true'
-#        run: |
-#          echo "FILE DOES NOT EXISTS"
-#      - name: File exists
-#        id: file_exists
-#        if: steps.check_files.outputs.files_exists == 'true'
-#        run: |
-#          echo "value=${{ matrix.value }}" >> $GITHUB_OUTPUT
-#  print:
-#    needs: [ define_next_parameter_file ]
-#    runs-on: ubuntu-latest
-#    steps:
-#      - run: |
-#          echo "${{ needs.define_next_parameter_file.outputs.thefile }}"
-#
-#
-#  setup_parameters:
-#    needs: [ define_next_parameter_file, format_prj_coode ]
-#    runs-on: ubuntu-latest
-#    env:
-#      PROJECT_CODE_LOWERCASE: ${{ needs.format_prj_coode.outputs.prj_code_lower }}
-#      PROJECT_CODE_UPPERCASE: ${{ needs.format_prj_coode.outputs.prj_code_upper }}
-#    steps:
-#      - name: Check out repository code
-#        uses: actions/checkout@v3
-#        with:
-#          token: ${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN }}
-#      - name: Rename file 
-#        run: mv ${{ needs.define_next_parameter_file.outputs.thefile }} "params/${{ env.PROJECT_CODE_UPPERCASE}}_params.env"
-#      - name: Inject variables
-#        run: |
-#          sed -i "s#VAR_TEMPLATE_PROJECT_CODE_LOWERCASE#${{ env.PROJECT_CODE_LOWERCASE}}#g" params/${{ env.PROJECT_CODE_UPPERCASE}}_params.env
-#      - name: Push to remote
-#        run: |
-#          git config --global user.name "Configure Project"
-#          git config --global user.email "configure.project@atos.net"
-#          git add -A
-#          git commit -m "Generation parameters file"
-#          git push
