@@ -25,6 +25,13 @@ jobs:
       prj_code_upper: ${{ steps.var.outputs.prj_code_upper}}
     runs-on: "ubuntu-latest"
     steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN }}
+          repository: ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-JRQ-base
+          ref: 'main'
+          path: 'jrq_tmp' 
       - name: Setting prj code to lower
         uses: actions/github-script@v6
         id: var
