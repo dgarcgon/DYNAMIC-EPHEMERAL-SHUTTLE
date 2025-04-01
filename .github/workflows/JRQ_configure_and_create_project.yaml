@@ -34,6 +34,7 @@ jobs:
           
   format_prj_coode:
     needs: [validate_dependencies]
+    name: 'Formating the project code'
     outputs:
       prj_code_lower: ${{ steps.var.outputs.prj_code_lower}}
       prj_code_upper: ${{ steps.var.outputs.prj_code_upper}}
