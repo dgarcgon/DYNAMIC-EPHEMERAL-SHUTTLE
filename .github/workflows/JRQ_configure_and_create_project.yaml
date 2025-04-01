@@ -115,12 +115,12 @@ jobs:
         git commit -m "Confirmation of project configuration"
         git push
 
-    - name: Check out repository code JRQ-fronend+aks
+    - name: Check out repository code JRQ-fronend-aks
       uses: actions/checkout@v4
       with:
         repository: ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-JRQ-frontend-aks
         token: ${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN }}
-    - name: Inject variables for JRQ-fronend+aks
+    - name: Inject variables for JRQ-fronend-aks
       run: |
         sed -i "s#VAR_TEMPLATE_PROJECT_CODE_LOWERCASE#${{ env.PROJECT_CODE_LOWERCASE}}#g" backend_config.hcl
         sed -i "s#VAR_TEMPLATE_PROJECT_CODE_LOWERCASE#${{ env.PROJECT_CODE_LOWERCASE}}#g" frt_appgw.tf
@@ -131,7 +131,7 @@ jobs:
         sed -i "s#VAR_TEMPLATE_SUBNETS_AKS_NODE_IP#${{ env.SUBNETS_AKS_NODE_IP }}#g" terraform.tfvars.json
         sed -i "s#VAR_TEMPLATE_NSGS_APPGW_DESTINATION_ADDRESS_PREFIX#${{ env.NSGS_APPGW_DESTINATION_ADDRESS_PREFIX }}#g" terraform.tfvars.json
         sed -i "s#VAR_TEMPLATE_APPGW_LISTENERS_WILDCARD_BACKENDSIPS#${{ env.APPGW_LISTENERS_WILDCARD_BACKENDSIPS }}#g" terraform.tfvars.json
-    - name: Creating cfg-applied.txt file for JRQ-fronend+aks
+    - name: Creating cfg-applied.txt file for JRQ-fronend-aks
       run: |
         echo "CONFIGURATION APPLIED. DO NOT DELETE THIS FILE" >> cfg-applied.txt
         git config --global user.name "Configure Project"
@@ -172,11 +172,11 @@ jobs:
         org: true
         visibility: 'private'
     - name: Enable DDBB creation for JRQ-k8s
-      if: env.CREATE_MSSQL_DB == 'true'
+      if: github.event.inputs.CREATE_MSSQL_DB == 'true'
       run: |
         sed -i 's#VAR_TEMPLATE_CREATE_MSSQL_DB#true#g' variables.tf
     - name: Disable DDBB creation for JRQ-k8s
-      if: env.CREATE_MSSQL_DB == 'false'
+      if: github.event.inputs.CREATE_MSSQL_DB == 'false'
       run: |
         sed -i 's#VAR_TEMPLATE_CREATE_MSSQL_DB#false#g' variables.tf
     - name: Creating cfg-applied.txt file for JRQ-k8s
