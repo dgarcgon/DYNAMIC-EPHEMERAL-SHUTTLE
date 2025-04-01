@@ -33,6 +33,7 @@ jobs:
           fi
           
   format_prj_coode:
+    needs: [validate_dependencies]
     outputs:
       prj_code_lower: ${{ steps.var.outputs.prj_code_lower}}
       prj_code_upper: ${{ steps.var.outputs.prj_code_upper}}
