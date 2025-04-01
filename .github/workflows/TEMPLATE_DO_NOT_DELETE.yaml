@@ -85,7 +85,7 @@ jobs:
         sed -i "s#VAR_TEMPLATE_PROJECT_CODE_LOWERCASE#OWN_VAR_TEMPLATE_PROJECT_CODE_LOWERCASE#g" terraform.tfvars.json
         sed -i "s#VAR_TEMPLATE_VNET_SUPERNET#${{ env.VNET_SUPERNET }}#g" terraform.tfvars.json
         sed -i "s#VAR_TEMPLATE_SUBNETS_COMMON_IP#${{ env.SUBNETS_COMMON_IP }}#g" terraform.tfvars.json
-        sed -i "s#VAR_TEMPLATE_PROJECT_CODE_LOWERCASE#OWN_VAR_TEMPLATE_PROJECT_CODE_LOWERCASE#g" reusable-create-dynamicephemeral--base.yaml
+        sed -i "s#VAR_TEMPLATE_PROJECT_CODE_LOWERCASE#OWN_VAR_TEMPLATE_PROJECT_CODE_LOWERCASE#g" .github/workflows/reusable-create-dynamicephemeral-base.yaml
     - name: Creating cfg-applied.txt file for OWN_VAR_TEMPLATE_PROJECT_CODE_UPPERCASE-base
       run: |
         echo "CONFIGURATION APPLIED. DO NOT DELETE THIS FILE" >> cfg-applied.txt
@@ -111,7 +111,7 @@ jobs:
         sed -i "s#VAR_TEMPLATE_SUBNETS_AKS_NODE_IP#${{ env.SUBNETS_AKS_NODE_IP }}#g" terraform.tfvars.json
         sed -i "s#VAR_TEMPLATE_NSGS_APPGW_DESTINATION_ADDRESS_PREFIX#${{ env.NSGS_APPGW_DESTINATION_ADDRESS_PREFIX }}#g" terraform.tfvars.json
         sed -i "s#VAR_TEMPLATE_APPGW_LISTENERS_WILDCARD_BACKENDSIPS#${{ env.APPGW_LISTENERS_WILDCARD_BACKENDSIPS }}#g" terraform.tfvars.json
-        sed -i "s#VAR_TEMPLATE_PROJECT_CODE_LOWERCASE#OWN_VAR_TEMPLATE_PROJECT_CODE_LOWERCASE#g" reusable-create-dynamicephemeral-frontend-aks-env.yaml
+        sed -i "s#VAR_TEMPLATE_PROJECT_CODE_LOWERCASE#OWN_VAR_TEMPLATE_PROJECT_CODE_LOWERCASE#g" .github/workflows/reusable-create-dynamicephemeral-frontend-aks-env.yaml
     - name: Creating cfg-applied.txt file for OWN_VAR_TEMPLATE_PROJECT_CODE_UPPERCASE-fronend-aks
       run: |
         echo "CONFIGURATION APPLIED. DO NOT DELETE THIS FILE" >> cfg-applied.txt
