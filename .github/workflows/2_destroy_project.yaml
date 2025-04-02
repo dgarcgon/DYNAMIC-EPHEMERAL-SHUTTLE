@@ -70,7 +70,7 @@ jobs:
         git push
 
   removing-creation-template-file:
-    needs: [ executing-destroy-workflow ]
+    needs: [ executing-destroy-workflow, format_prj_coode]
     name: 'Removing creation template file'
     runs-on: ubuntu-latest
     env:
