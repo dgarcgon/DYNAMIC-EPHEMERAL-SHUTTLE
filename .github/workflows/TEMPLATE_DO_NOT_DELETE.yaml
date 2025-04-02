@@ -53,6 +53,7 @@ jobs:
 #          exit 1
 
   generate-params-file:
+    needs: [validate_dependencies]
     runs-on: ubuntu-latest  
     name: 'Generating params file'
     steps:
