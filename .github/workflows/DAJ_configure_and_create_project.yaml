@@ -1,0 +1,211 @@
+name: Configur/Create DAJ project
+on:
+  workflow_dispatch:
+    inputs:
+      KEYCLOAK_ARGOCD_CLIENT_SECRET:
+        description: 'Keycloak ArgoCD client secret'
+        required: true
+        default: ""
+        type: text
+      CREATE_MSSQL_DB:
+        description: 'Do you want to create a MSSql service and a default database? If yes, provide a value in the next DB admin field'
+        required: true
+        default: false
+        type: boolean
+      DB_ADMIN_PWD:
+        description: 'DB admin password'
+        required: false
+        default: ""
+        type: text
+
+jobs:
+  validate_dependencies:
+    name: 'Validating dependencies'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate dependencies
+        run: |
+          if [[ ${{ github.event.inputs.CREATE_MSSQL_DB }} == true ]]; then
+            if [[ -z "${{ github.event.inputs.DB_ADMIN_PWD }}" ]]; then
+               echo "DB Admin password required"
+               exit 1
+            fi
+          fi
+  
+#  check-if-params-file-exists:
+#    needs: [validate_dependencies]
+#    name: Checking if parameters file exists
+#    runs-on: ubuntu-latest
+#    outputs:
+#      status: ${{ steps.early.conclusion }}
+#    steps:
+#      - name: Check out repository code
+#        uses: actions/checkout@v4
+#      - name: Checking params/DAJ_params.env file existence
+#        id: check_files
+#        uses: andstor/file-existence-action@v3
+#        with:
+#          files:  'params/DAJ_params.env'
+#      - name: Configuration is done
+#        if: steps.check_files.outputs.files_exists != 'true'
+#        run: |
+#          echo "THE CONFIGURATION FILE DAJ_params.env DOES NOT EXISTS, PLEASE CONFIGURE IT"
+#          exit 1
+
+  generate-params-file:
+    runs-on: ubuntu-latest  
+    name: 'Generating params file'
+    steps:
+    - name: Check out local repository
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN }}
+    - name: Search file
+      run: |
+         chmod 755 params/find_next_conf.sh; params/find_next_conf.sh in DAJ
+    - name: Make the push
+      run: |
+        git config --global user.name "Configure Project"
+        git config --global user.email "configure.project@atos.net"
+        git add -A
+        git commit -m "Confirmation of project configuration"
+        git push
+        
+  configure_projects:
+    needs: [generate-params-file]
+    name: 'Configuring the projects base / frontend-aks / k8s'
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - name: Load parameters from file
+      uses: cardinalby/export-env-action@v1
+      with:
+        envFile: 'params/DAJ_params.env'
+        expand: 'true'
+    - name: Checking the loaded parameters
+      run: |
+        echo "env.PROJECT_CODE: '${{env.PROJECT_CODE}}'" 
+        echo "env.VNET_SUPERNET: '${{env.VNET_SUPERNET}}'" 
+        echo "env.SUBNETS_COMMON_IP: '${{env.SUBNETS_COMMON_IP}}'" 
+        echo "env.SUBNETS_APPGW_IP: '${{env.SUBNETS_APPGW_IP}}'" 
+        echo "env.SUBNETS_APPGW_PRIVATE_IP_ADDRESS: '${{env.SUBNETS_APPGW_PRIVATE_IP_ADDRESS}}'" 
+        echo "env.SUBNETS_AKS_NODE_IP: '${{env.SUBNETS_AKS_NODE_IP}}'" 
+        echo "env.NSGS_APPGW_DESTINATION_ADDRESS_PREFIX: '${{env.NSGS_APPGW_DESTINATION_ADDRESS_PREFIX}}'" 
+        echo "env.APPGW_LISTENERS_WILDCARD_BACKENDSIPS: '${{env.APPGW_LISTENERS_WILDCARD_BACKENDSIPS}}'" 
+        echo "env.LOAD_BALANCER_IP: '${{env.LOAD_BALANCER_IP}}'" 
+    - name: Check out repository code DAJ-base
+      uses: actions/checkout@v4
+      with:
+        repository: ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-DAJ-base
+        token: ${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN }}
+    - name: Inject variables for DAJ-base
+      run: |
+        sed -i "s#VAR_TEMPLATE_PROJECT_CODE_LOWERCASE#daj#g" backend_config.hcl
+        sed -i "s#VAR_TEMPLATE_PROJECT_CODE_LOWERCASE#daj#g" terraform.tfvars.json
+        sed -i "s#VAR_TEMPLATE_VNET_SUPERNET#${{ env.VNET_SUPERNET }}#g" terraform.tfvars.json
+        sed -i "s#VAR_TEMPLATE_SUBNETS_COMMON_IP#${{ env.SUBNETS_COMMON_IP }}#g" terraform.tfvars.json
+        sed -i "s#VAR_TEMPLATE_PROJECT_CODE_UPPERCASE#DAJ#g" .github/workflows/reusable-create-dynamicephemeral-base.yaml
+    - name: Creating cfg-applied.txt file for DAJ-base
+      run: |
+        echo "CONFIGURATION APPLIED. DO NOT DELETE THIS FILE" >> cfg-applied.txt
+        git config --global user.name "Configure Project"
+        git config --global user.email "configure.project@atos.net"
+        git add -A
+        git commit -m "Confirmation of project configuration"
+        git push
+
+    - name: Check out repository code DAJ-fronend-aks
+      uses: actions/checkout@v4
+      with:
+        repository: ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-DAJ-frontend-aks
+        token: ${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN }}
+    - name: Inject variables for DAJ-fronend-aks
+      run: |
+        sed -i "s#VAR_TEMPLATE_PROJECT_CODE_LOWERCASE#daj#g" backend_config.hcl
+        sed -i "s#VAR_TEMPLATE_PROJECT_CODE_LOWERCASE#daj#g" frt_appgw.tf
+        sed -i "s#VAR_TEMPLATE_PROJECT_CODE_LOWERCASE#daj#g" frt_waf_custom_rules.tf
+        sed -i "s#VAR_TEMPLATE_PROJECT_CODE_LOWERCASE#daj#g" terraform.tfvars.json
+        sed -i "s#VAR_TEMPLATE_SUBNETS_APPGW_IP#${{ env.SUBNETS_APPGW_IP }}#g" terraform.tfvars.json
+        sed -i "s#VAR_TEMPLATE_SUBNETS_APPGW_PRIVATE_IP_ADDRESS#${{ env.SUBNETS_APPGW_PRIVATE_IP_ADDRESS }}#g" terraform.tfvars.json
+        sed -i "s#VAR_TEMPLATE_SUBNETS_AKS_NODE_IP#${{ env.SUBNETS_AKS_NODE_IP }}#g" terraform.tfvars.json
+        sed -i "s#VAR_TEMPLATE_NSGS_APPGW_DESTINATION_ADDRESS_PREFIX#${{ env.NSGS_APPGW_DESTINATION_ADDRESS_PREFIX }}#g" terraform.tfvars.json
+        sed -i "s#VAR_TEMPLATE_APPGW_LISTENERS_WILDCARD_BACKENDSIPS#${{ env.APPGW_LISTENERS_WILDCARD_BACKENDSIPS }}#g" terraform.tfvars.json
+        sed -i "s#VAR_TEMPLATE_PROJECT_CODE_UPPERCASE#DAJ#g" .github/workflows/reusable-create-dynamicephemeral-frontend-aks-env.yaml
+        sed -i "s#VAR_TEMPLATE_PROJECT_CODE_UPPERCASE#DAJ#g" .github/workflows/reusable-destroy-dynamicephemeral-frontend-aks-env.yaml
+    - name: Creating cfg-applied.txt file for DAJ-fronend-aks
+      run: |
+        echo "CONFIGURATION APPLIED. DO NOT DELETE THIS FILE" >> cfg-applied.txt
+        git config --global user.name "Configure Project"
+        git config --global user.email "configure.project@atos.net"
+        git add -A
+        git commit -m "Confirmation of project configuration"
+        git push
+
+    - name: Check out repository code DAJ-k8s
+      uses: actions/checkout@v4
+      with:
+        repository: ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-DAJ-k8s
+        token: ${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN }}
+    - name: Inject variables for DAJ-k8s
+      run: |
+        sed -i 's#VAR_TEMPLATE_LOAD_BALANCER_IP#${{ env.LOAD_BALANCER_IP }}#g' files/chart_values/nginx-ingress-controller-values.yaml
+        sed -i "s#VAR_TEMPLATE_PROJECT_CODE_LOWERCASE#daj#g" terraform.tfvars.json
+        sed -i "s#VAR_TEMPLATE_PROJECT_CODE_LOWERCASE#daj#g" backend_config.hcl
+        sed -i "s#VAR_TEMPLATE_PROJECT_CODE_UPPERCASE#DAJ#g" .github/workflows/create-dynamicepehemral-k8s.yaml
+        sed -i "s#VAR_TEMPLATE_PROJECT_CODE_UPPERCASE#DAJ#g" .github/workflows/destroy-dynamicepehemral-k8s.yaml
+        sed -i "s#VAR_TEMPLATE_PROJECT_CODE_UPPERCASE#DAJ#g" .github/workflows/reusable-create-dynamicepehemral-k8s.yaml
+        sed -i "s#VAR_TEMPLATE_PROJECT_CODE_UPPERCASE#DAJ#g" .github/workflows/reusable-destroy-dynamicepehemral-k8s.yaml
+    - name: Create KEYCLOAK_ARGOCD_CLIENT_SECRET secret for DAJ-k8s
+      uses: hmanzur/actions-set-secret@v2.0.0
+      with:
+        name: "DAJ_KEYCLOAK_ARGOCD_CLIENT_SECRET"
+        value: "${{ github.event.inputs.KEYCLOAK_ARGOCD_CLIENT_SECRET }}"
+        repository: 'ES-BAR-MEV'
+        token: ${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN }}
+        org: true
+        visibility: 'private'
+    - name: Create DB_ADMIN_PWD secret for DAJ-k8s
+      if: github.event.inputs.CREATE_MSSQL_DB == 'true'
+      uses: hmanzur/actions-set-secret@v2.0.0
+      with:
+        name: "DAJ_DB_ADMIN_PWD"
+        value: "${{ github.event.inputs.DB_ADMIN_PWD}}"
+        repository: 'ES-BAR-MEV'
+        token: ${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN }}
+        org: true
+        visibility: 'private'
+    - name: Enable DDBB creation for DAJ-k8s
+      if: github.event.inputs.CREATE_MSSQL_DB == 'true'
+      run: |
+        sed -i 's#VAR_TEMPLATE_CREATE_MSSQL_DB#true#g' variables.tf
+    - name: Disable DDBB creation for DAJ-k8s
+      if: github.event.inputs.CREATE_MSSQL_DB == 'false'
+      run: |
+        sed -i 's#VAR_TEMPLATE_CREATE_MSSQL_DB#false#g' variables.tf
+    - name: Creating cfg-applied.txt file for DAJ-k8s
+      run: |
+        echo "CONFIGURATION APPLIED. DO NOT DELETE THIS FILE" >> cfg-applied.txt
+        git config --global user.name "Configure Project"
+        git config --global user.email "configure.project@atos.net"
+        git add -A
+        git commit -m "Confirmation of project configuration"
+        git push
+
+  push_run_creation_workflow_file:
+    needs: [configure_projects]
+    name: 'Creating the projects base / frontend-aks / k8s'
+    runs-on: ubuntu-latest
+    steps:
+    - name: Check out repository code for DAJ-base
+      uses: actions/checkout@v4
+      with:
+        repository: ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-DAJ-base
+        token: ${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN }}
+    - name: Create the file run_creation_workflow.txt for DAJ-base
+      run: |
+        echo "THIS REPO HAS BEEN CALLED FROM SHUTTLE WORKFLOW. DO NOT DELETE IT" >> DO_NOT_TOUCH/run_creation_workflow.txt
+        git config --global user.name "Configure Project"
+        git config --global user.email "configure.project@atos.net"
+        git add -A
+        git commit -m "Confirmation of project configuration"
+        git push
