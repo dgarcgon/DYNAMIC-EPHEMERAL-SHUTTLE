@@ -47,7 +47,7 @@ jobs:
             core.setOutput('prj_code_lower', '${{github.event.inputs.PROJECT_CODE }}'.toLowerCase().replaceAll(/[/.]/g, '-').trim('-'));
             core.setOutput('prj_code_upper', '${{github.event.inputs.PROJECT_CODE }}'.toUpperCase().replaceAll(/[/.]/g, '-').trim('-'));     
 
-  executinh-destroy-workflow:
+  executing-destroy-workflow:
     needs: [ format_prj_coode ]
     name: 'Executing destroy workflow'
     runs-on: ubuntu-latest
@@ -55,7 +55,7 @@ jobs:
       PROJECT_CODE_LOWERCASE: ${{ needs.format_prj_coode.outputs.prj_code_lower }}
       PROJECT_CODE_UPPERCASE: ${{ needs.format_prj_coode.outputs.prj_code_upper }}
     steps:
-    - name: Check out repository code for OWN_VAR_TEMPLATE_PROJECT_CODE_UPPERCASE-k8s
+    - name: Check out repository code for ${{ env.PROJECT_CODE_UPPERCASE }}-k8s
       uses: actions/checkout@v4
       with:
         repository: ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-${{ env.PROJECT_CODE_UPPERCASE }}-k8s
@@ -67,4 +67,25 @@ jobs:
         git config --global user.email "configure.project@atos.net"
         git add -A
         git commit -m "Confirmation of project configuration"
+        git push
+
+  removing-creation-template-file:
+    needs: [ executing-destroy-workflow ]
+    name: 'Removing creation template file'
+    runs-on: ubuntu-latest
+    env:
+      PROJECT_CODE_LOWERCASE: ${{ needs.format_prj_coode.outputs.prj_code_lower }}
+      PROJECT_CODE_UPPERCASE: ${{ needs.format_prj_coode.outputs.prj_code_upper }}
+    steps:
+    - name: Check out local repository code
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN }}
+    - name: Removing file ${{ env.PROJECT_CODE_UPPERCASE }}_configure_and_create_project.yaml
+      run: |
+        rm  ${{ env.PROJECT_CODE_UPPERCASE }}_configure_and_create_project.yaml
+        git config --global user.name "Configure Project"
+        git config --global user.email "configure.project@atos.net"
+        git add -A
+        git commit -m "Destroying project configuration"
         git push
