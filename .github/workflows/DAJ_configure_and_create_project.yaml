@@ -78,7 +78,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
       with:
-        path: my-path
+        fetch-depth: 0
     - name: Load parameters from file
       uses: cardinalby/export-env-action@v1
       with:
