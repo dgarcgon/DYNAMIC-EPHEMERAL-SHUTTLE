@@ -7,6 +7,10 @@ jobs:
     runs-on: ubuntu-latest  
     name: 'Print'
     steps:
+    - name: Check out local repository
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN }}
     - name: Search file
       run: |
          /params/find_next_conf.sh in DAJ
