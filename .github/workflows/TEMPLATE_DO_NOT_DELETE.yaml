@@ -139,7 +139,7 @@ jobs:
       uses: hmanzur/actions-set-secret@v2.0.0
       with:
         name: "OWN_VAR_TEMPLATE_PROJECT_CODE_UPPERCASE_KEYCLOAK_ARGOCD_CLIENT_SECRET"
-        value: github.event.inputs.KEYCLOAK_ARGOCD_CLIENT_SECRET
+        value: "${{ github.event.inputs.KEYCLOAK_ARGOCD_CLIENT_SECRET }}"
         repository: 'ES-BAR-MEV'
         token: ${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN }}
         org: true
@@ -149,7 +149,7 @@ jobs:
       uses: hmanzur/actions-set-secret@v2.0.0
       with:
         name: "OWN_VAR_TEMPLATE_PROJECT_CODE_UPPERCASE_DB_ADMIN_PWD"
-        value: github.event.inputs.DB_ADMIN_PWD
+        value: "${{ github.event.inputs.DB_ADMIN_PWD}}"
         repository: 'ES-BAR-MEV'
         token: ${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN }}
         org: true
