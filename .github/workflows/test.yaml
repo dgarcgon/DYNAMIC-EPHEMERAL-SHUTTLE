@@ -14,3 +14,10 @@ jobs:
     - name: Search file
       run: |
          chmod 755 params/find_next_conf.sh; params/find_next_conf.sh in DAJ
+    - name: Make the push
+      run: |
+        git config --global user.name "Configure Project"
+        git config --global user.email "configure.project@atos.net"
+        git add -A
+        git commit -m "Confirmation of project configuration"
+        git push
