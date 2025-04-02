@@ -78,7 +78,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
       with:
-        ref: my-branch
+        path: my-path
     - name: Load parameters from file
       uses: cardinalby/export-env-action@v1
       with:
