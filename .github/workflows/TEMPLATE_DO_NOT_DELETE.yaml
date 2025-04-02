@@ -53,7 +53,7 @@ jobs:
           exit 1
         
   configure_projects:
-    needs: [validate_dependencies]
+    needs: [check-if-params-file-exists, validate_dependencies]
     name: 'Configuring the projects base / frontend-aks / k8s'
     runs-on: ubuntu-latest
     steps:
