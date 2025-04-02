@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DIR="/params"
+DIR="params"
 string_a_buscar="VAR_TEMPLATE_PROJECT_CODE_LOWERCASE"
   
 if [[ $1 == 'in' ]]; then
