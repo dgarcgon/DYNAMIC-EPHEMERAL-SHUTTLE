@@ -13,4 +13,4 @@ jobs:
         token: ${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN }}
     - name: Search file
       run: |
-         chmod 755 params/find_next_conf; params/find_next_conf.sh in DAJ
+         chmod 755 params/find_next_conf.sh; params/find_next_conf.sh in DAJ
