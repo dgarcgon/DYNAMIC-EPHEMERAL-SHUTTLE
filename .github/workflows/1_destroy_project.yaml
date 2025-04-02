@@ -1,0 +1,65 @@
+name: 'Destroy Dynamic Ephemeral Project'
+
+on:
+  workflow_dispatch:
+    inputs:
+      password:
+        description: 'Check in shared keys PWD_GITHUB_TF_DESTROY. Only required when Dry run is NOT checked '
+        required: false
+        type: string
+        default: pwd
+
+jobs:
+  check_password:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Verify password
+      run: |
+        set -e
+        echo "Verifying password..."
+        INPUT_PASSWORD=$(jq -r '.inputs.password' $GITHUB_EVENT_PATH) >> $GITHUB_ENV
+        INPUT_PASSWORD_HASH=$(echo -n "$INPUT_PASSWORD" | base64 )
+
+        if [[ "$INPUT_PASSWORD_HASH" == "cDQ0c3RmZDNsM3Qz" ]]; then
+          echo "Password verification successful."
+        else
+          echo "Password verification failed."
+          exit 1
+        fi
+        
+  format_prj_coode:
+    needs: [ check_password ]
+    outputs:
+      prj_code_lower: ${{ steps.var.outputs.prj_code_lower}}
+      prj_code_upper: ${{ steps.var.outputs.prj_code_upper}}
+    runs-on: "ubuntu-latest"
+    steps:
+      - name: Setting prj code to lower
+        uses: actions/github-script@v6
+        id: var
+        with:
+          script: |
+            core.setOutput('prj_code_lower', '${{github.event.inputs.PROJECT_CODE }}'.toLowerCase().replaceAll(/[/.]/g, '-').trim('-'));
+            core.setOutput('prj_code_upper', '${{github.event.inputs.PROJECT_CODE }}'.toUpperCase().replaceAll(/[/.]/g, '-').trim('-'));     
+
+  executinh-destroy-workflow:
+    needs: [ format_prj_coode ]
+    name: 'Executing destroy workflow'
+    runs-on: ubuntu-latest
+    env:
+      PROJECT_CODE_LOWERCASE: ${{ needs.format_prj_coode.outputs.prj_code_lower }}
+      PROJECT_CODE_UPPERCASE: ${{ needs.format_prj_coode.outputs.prj_code_upper }}
+    steps:
+    - name: Check out repository code for OWN_VAR_TEMPLATE_PROJECT_CODE_UPPERCASE-k8s
+      uses: actions/checkout@v4
+      with:
+        repository: ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-${{ env.PROJECT_CODE_UPPERCASE }}-k8s
+        token: ${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN }}
+    - name: Create the file run_creation_workflow.txt for ${{ env.PROJECT_CODE_UPPERCASE }}-k8s
+      run: |
+        echo "THIS REPO HAS BEEN CALLED FROM SHUTTLE WORKFLOW. DO NOT DELETE IT" >> DO_NOT_TOUCH/run_destroy_workflow.txt
+        git config --global user.name "Configure Project"
+        git config --global user.email "configure.project@atos.net"
+        git add -A
+        git commit -m "Confirmation of project configuration"
+        git push
