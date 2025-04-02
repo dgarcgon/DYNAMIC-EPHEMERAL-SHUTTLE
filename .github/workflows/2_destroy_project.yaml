@@ -1,4 +1,4 @@
-name: 'Destroy Dynamic Ephemeral Project'
+name: '2. Destroy Dynamic Ephemeral Project'
 
 on:
   workflow_dispatch:
