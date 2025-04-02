@@ -81,7 +81,7 @@ jobs:
       uses: actions/checkout@v4
       with:
         token: ${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN }}
-    - name: Removing file ${{ env.PROJECT_CODE_UPPERCASE }}_configure_and_create_project.yaml
+    - name: Removing file .github/workflows/${{ env.PROJECT_CODE_UPPERCASE }}_configure_and_create_project.yaml
       run: |
         rm  ${{ env.PROJECT_CODE_UPPERCASE }}_configure_and_create_project.yaml
         git config --global user.name "Configure Project"
