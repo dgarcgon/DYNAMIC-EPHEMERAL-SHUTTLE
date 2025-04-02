@@ -81,6 +81,9 @@ jobs:
       uses: actions/checkout@v4
       with:
         token: ${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN }}
+    - name: Rollback params file
+      run: |
+         chmod 755 params/find_next_conf.sh; params/find_next_conf.sh out ${{ env.PROJECT_CODE_UPPERCASE }}
     - name: Removing file .github/workflows/${{ env.PROJECT_CODE_UPPERCASE }}_configure_and_create_project.yaml
       run: |
         rm  .github/workflows/${{ env.PROJECT_CODE_UPPERCASE }}_configure_and_create_project.yaml
