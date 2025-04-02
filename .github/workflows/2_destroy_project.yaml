@@ -3,6 +3,11 @@ name: '2. Destroy Dynamic Ephemeral Project'
 on:
   workflow_dispatch:
     inputs:
+      PROJECT_CODE:
+        description: 'Project Code: (Example: demo)'
+        required: true
+        default: ""
+        type: text
       password:
         description: 'Check in shared keys PWD_GITHUB_TF_DESTROY. Only required when Dry run is NOT checked '
         required: false
