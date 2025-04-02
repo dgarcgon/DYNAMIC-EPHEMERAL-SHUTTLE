@@ -80,6 +80,11 @@ jobs:
         run: |
           sed -i "s#OWN_VAR_TEMPLATE_PROJECT_CODE_UPPERCASE#${{ env.PROJECT_CODE_UPPERCASE}}#g" .github/workflows/${{ env.PROJECT_CODE_UPPERCASE}}_configure_and_create_project.yaml
           sed -i "s#OWN_VAR_TEMPLATE_PROJECT_CODE_LOWERCASE#${{ env.PROJECT_CODE_LOWERCASE}}#g" .github/workflows/${{ env.PROJECT_CODE_UPPERCASE}}_configure_and_create_project.yaml
+
+      - name: Generating params file
+        run: |
+           chmod 755 params/find_next_conf.sh; params/find_next_conf.sh in OWN_VAR_TEMPLATE_PROJECT_CODE_UPPERCASE
+        
       - name: update file and push to remote
         run: |
           git config --global user.name "Configure Project"
