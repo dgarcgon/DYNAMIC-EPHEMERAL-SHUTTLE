@@ -83,7 +83,7 @@ jobs:
 
       - name: Generating params file
         run: |
-           chmod 755 params/find_next_conf.sh; params/find_next_conf.sh in OWN_VAR_TEMPLATE_PROJECT_CODE_UPPERCASE
+           chmod 755 params/find_next_conf.sh; params/find_next_conf.sh in ${{ env.PROJECT_CODE_UPPERCASE}}
         
       - name: update file and push to remote
         run: |
