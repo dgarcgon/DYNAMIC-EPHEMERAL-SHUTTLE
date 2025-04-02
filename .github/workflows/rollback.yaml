@@ -1,0 +1,23 @@
+name: Rollback
+on:
+  workflow_dispatch:
+
+jobs:
+  configure-project:
+    runs-on: ubuntu-latest  
+    name: 'Rollback'
+    steps:
+    - name: Check out local repository
+      uses: actions/checkout@v4
+      with:
+        token: ${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN }}
+    - name: Search file
+      run: |
+         chmod 755 params/find_next_conf.sh; params/find_next_conf.sh out DAJ
+    - name: Make the push
+      run: |
+        git config --global user.name "Configure Project"
+        git config --global user.email "configure.project@atos.net"
+        git add -A
+        git commit -m "Confirmation of project configuration"
+        git push
