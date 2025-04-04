@@ -9,7 +9,7 @@ jobs:
       with:
         repository: ES-BAR-MEV-ITSM/ITSM_INC_PROD
         ref: main
-        token: ${{ secrets.DYNAMICEPHEMERAL_ISSUES_TOKEN }}
+        token: ${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN }}
     - name: Create Issue
       run: |
         echo "Creating new issue..."
