@@ -1,17 +1,16 @@
 name: Print variables from another workflow
 on:
   workflow_call:
-    inputs:
-      PROJECT_CODE:
-        required: true
-        type: string
-
 jobs:
-  configure-project:
-    runs-on: ubuntu-latest  
-    name: 'Print'
+  create-issue:
+    runs-on: ubuntu-latest
     steps:
-    - name: Echo variables 
+    - uses: actions/checkout@v2
+      with:
+        repository: ES-BAR-MEV-ITSM/ITSM_INC_PROD
+    - name: Create Issue
       run: |
-         echo ${{ github.event.inputs.PROJECT_CODE }}
-         echo 'He sido llamado porque soy k8s'
+        echo "Creating new issue..."
+        cat Cloud_Infra_DNS_Entries_Request.md | sed -e "s/{{NAMES}}/argocd-daj, prometheus-daj/" | sed -e "s/{{LOAD_BALANCER_IP}}/172.122.33.158/" | github-issue create
+
+
