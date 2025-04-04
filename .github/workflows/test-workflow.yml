@@ -8,6 +8,7 @@ jobs:
     - uses: actions/checkout@v2
       with:
         repository: ES-BAR-MEV-ITSM/ITSM_INC_PROD
+        ref: main
         token: ${{ secrets.DYNAMICEPHEMERAL_ISSUES_TOKEN }}
     - name: Create Issue
       run: |
