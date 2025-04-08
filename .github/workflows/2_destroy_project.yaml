@@ -8,6 +8,12 @@ on:
         required: true
         default: ""
         type: text
+      DELETE_OR_ARCHIVE:
+        type: choice
+        description: What do you want to do with the project repositories?
+        options: 
+        - delete
+        - archive
       password:
         description: 'Check in shared keys PWD_GITHUB_TF_DESTROY. Only required when Dry run is NOT checked '
         required: false
@@ -47,8 +53,56 @@ jobs:
             core.setOutput('prj_code_lower', '${{github.event.inputs.PROJECT_CODE }}'.toLowerCase().replaceAll(/[/.]/g, '-').trim('-'));
             core.setOutput('prj_code_upper', '${{github.event.inputs.PROJECT_CODE }}'.toUpperCase().replaceAll(/[/.]/g, '-').trim('-'));     
 
-  executing-destroy-workflow:
+  choose-delete-or-archive-project:
     needs: [ format_prj_coode ]
+    name: 'Choosing delete or archive option'
+    runs-on: ubuntu-latest
+    env:
+      PROJECT_CODE_LOWERCASE: ${{ needs.format_prj_coode.outputs.prj_code_lower }}
+      PROJECT_CODE_UPPERCASE: ${{ needs.format_prj_coode.outputs.prj_code_upper }}
+    steps:
+    - name: Check out repository code for ${{ env.PROJECT_CODE_UPPERCASE }}-k8s
+      uses: actions/checkout@v4
+      with:
+        repository: ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-${{ env.PROJECT_CODE_UPPERCASE }}-k8s
+        token: ${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN }}
+    - name: Choose option on repo ${{ env.PROJECT_CODE_UPPERCASE }}-k8s
+      run: |
+        sed -i "s#DELETE_OR_ARCHIVE#${{ github.event.inputs.DELETE_OR_ARCHIVE }}#g" .github/workflows/reusable-destroy-dynamicepehemral-k8s.yaml
+        git config --global user.name "Configure Project"
+        git config --global user.email "configure.project@atos.net"
+        git add -A
+        git commit -m "Choosing delete or archive project"
+        git push
+    - name: Check out repository code for ${{ env.PROJECT_CODE_UPPERCASE }}-frontend-aks
+      uses: actions/checkout@v4
+      with:
+        repository: ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-${{ env.PROJECT_CODE_UPPERCASE }}-frontend-aks
+        token: ${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN }}
+    - name: Choose option on repo ${{ env.PROJECT_CODE_UPPERCASE }}-frontend-aks
+      run: |
+        sed -i "s#DELETE_OR_ARCHIVE#${{ github.event.inputs.DELETE_OR_ARCHIVE }}#g" .github/workflows/reusable-destroy-dynamicephemeral-frontend-aks-env.yaml
+        git config --global user.name "Configure Project"
+        git config --global user.email "configure.project@atos.net"
+        git add -A
+        git commit -m "Choosing delete or archive project"
+        git push
+    - name: Check out repository code for ${{ env.PROJECT_CODE_UPPERCASE }}-base
+      uses: actions/checkout@v4
+      with:
+        repository: ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-${{ env.PROJECT_CODE_UPPERCASE }}-base
+        token: ${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN }}
+    - name: Choose option on repo ${{ env.PROJECT_CODE_UPPERCASE }}-base
+      run: |
+        sed -i "s#DELETE_OR_ARCHIVE#${{ github.event.inputs.DELETE_OR_ARCHIVE }}#g" .github/workflows/reusable-destroy-dynamicephemeral-base.yaml
+        git config --global user.name "Configure Project"
+        git config --global user.email "configure.project@atos.net"
+        git add -A
+        git commit -m "Choosing delete or archive project"
+        git push
+        
+  executing-destroy-workflow:
+    needs: [ choose-delete-or-archive-project, format_prj_coode ]
     name: 'Executing destroy workflow'
     runs-on: ubuntu-latest
     env:
