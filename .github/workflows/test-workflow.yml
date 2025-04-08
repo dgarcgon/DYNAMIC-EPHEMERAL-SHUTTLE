@@ -10,9 +10,14 @@ jobs:
         repository: ES-BAR-MEV-ITSM/ITSM_INC_PROD
         ref: main
         token: ${{ secrets.DYNAMICEPHEMERAL_ISSUES_TOKEN }}
-    - name: Create Issue
-      run: |
-        echo "Creating new issue..."
-        cat .github/ISSUE_TEMPLATE/Cloud_Infra_DNS_Entries_Request_to_add.md | sed -e "s/{{NAMES}}/argocd-daj, prometheus-daj/" | sed -e "s/{{LOAD_BALANCER_IP}}/172.122.33.158/" | github-issue create
+    - uses: JasonEtco/create-an-issue@v2
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        filename: .github/ISSUE_TEMPLATE/Cloud_Infra_DNS_Entries_Request_to_add.md
+#    - name: Create Issue
+#      run: |
+#        echo "Creating new issue..."
+#        cat .github/ISSUE_TEMPLATE/Cloud_Infra_DNS_Entries_Request_to_add.md | sed -e "s/{{NAMES}}/argocd-daj, prometheus-daj/" | sed -e "s/{{LOAD_BALANCER_IP}}/172.122.33.158/" | github-issue create
 
 
