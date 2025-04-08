@@ -12,8 +12,8 @@ on:
         type: choice
         description: What do you want to do with the project repositories?
         options: 
-        - delete
         - archive
+        - delete
       password:
         description: 'Check in shared keys PWD_GITHUB_TF_DESTROY. Only required when Dry run is NOT checked '
         required: false
