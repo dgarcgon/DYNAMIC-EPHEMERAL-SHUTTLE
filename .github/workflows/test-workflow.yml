@@ -15,15 +15,14 @@ jobs:
 #        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 #      with:
 #        filename: .github/ISSUE_TEMPLATE/Cloud_Infra_DNS_Entries_Request_to_add.md
-  call-workflow-to-create-the-issue:
-    uses: ES-BAR-MEV-ITSM/ITSM_INC_PROD/.github/workflows/reusable-create-issue.yaml@main
-    with:
-      NAMES: "prueba"
-      LOAD_BALANCER_IP: "12345"
-        
-#    - name: Create Issue
-#      run: |
-#        echo "Creating new issue..."
-#        cat .github/ISSUE_TEMPLATE/Cloud_Infra_DNS_Entries_Request_to_add.md | sed -e "s/{{NAMES}}/argocd-daj, prometheus-daj/" | sed -e "s/{{LOAD_BALANCER_IP}}/172.122.33.158/" | github-issue create
-
+            
+  delete-repositories:
+    name: 'Deleting repositories'
+    runs-on: ubuntu-latest
+    steps:
+    - name: Deleting 
+      run: |
+         gh repo delete ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-DEMO-k8s --yes
+      env:
+          GH_TOKEN: "${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN  }}"
 
