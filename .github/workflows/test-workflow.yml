@@ -13,6 +13,6 @@ jobs:
     - name: Create Issue
       run: |
         echo "Creating new issue..."
-        cat Cloud_Infra_DNS_Entries_Request_to_add.md | sed -e "s/{{NAMES}}/argocd-daj, prometheus-daj/" | sed -e "s/{{LOAD_BALANCER_IP}}/172.122.33.158/" | github-issue create
+        cat .github/ISSUE_TEMPLATE/Cloud_Infra_DNS_Entries_Request_to_add.md | sed -e "s/{{NAMES}}/argocd-daj, prometheus-daj/" | sed -e "s/{{LOAD_BALANCER_IP}}/172.122.33.158/" | github-issue create
 
 
