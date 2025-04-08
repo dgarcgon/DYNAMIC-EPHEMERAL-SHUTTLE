@@ -16,7 +16,7 @@ jobs:
 #      with:
 #        filename: .github/ISSUE_TEMPLATE/Cloud_Infra_DNS_Entries_Request_to_add.md
   call-workflow-to-create-the-issue:
-    uses: ES-BAR-MEV-ITSM/ITSM_INC_PROD/.github/reusable-create-issue.yaml@main
+    uses: ES-BAR-MEV-ITSM/ITSM_INC_PROD/.github/workflows/reusable-create-issue.yaml@main
     with:
       NAMES: "prueba"
       LOAD_BALANCER_IP: "12345"
