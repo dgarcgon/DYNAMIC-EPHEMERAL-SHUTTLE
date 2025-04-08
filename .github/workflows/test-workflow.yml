@@ -1,18 +1,51 @@
 name: test
 on:
   workflow_dispatch:
+    inputs:
+      PROJECT_CODE:
+        description: 'Project Code: (Example: demo)'
+        required: true
+        default: ""
+        type: text
 jobs:
-  create-issue:
-    runs-on: ubuntu-latest
+#  create-issue:
+#    runs-on: ubuntu-latest
+#    steps:
+#    - uses: actions/checkout@v2
+#      with:
+#        repository: ES-BAR-MEV-ITSM/ITSM_INC_PROD
+#        ref: main
+#        token: ${{ secrets.DYNAMICEPHEMERAL_ISSUES_TOKEN }}
+#    - uses: JasonEtco/create-an-issue@v2
+#      env:
+#        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#      with:
+#        filename: .github/ISSUE_TEMPLATE/Cloud_Infra_DNS_Entries_Request_to_add.md
+
+  format_prj_coode:
+    outputs:
+      prj_code_lower: ${{ steps.var.outputs.prj_code_lower}}
+      prj_code_upper: ${{ steps.var.outputs.prj_code_upper}}
+    runs-on: "ubuntu-latest"
     steps:
-    - uses: actions/checkout@v2
-      with:
-        repository: ES-BAR-MEV-ITSM/ITSM_INC_PROD
-        ref: main
-        token: ${{ secrets.DYNAMICEPHEMERAL_ISSUES_TOKEN }}
-    - uses: JasonEtco/create-an-issue@v2
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        filename: .github/ISSUE_TEMPLATE/Cloud_Infra_DNS_Entries_Request_to_add.md
+      - name: Setting prj code to lower
+        uses: actions/github-script@v6
+        id: var
+        with:
+          script: |
+            core.setOutput('prj_code_lower', '${{github.event.inputs.PROJECT_CODE }}'.toLowerCase().replaceAll(/[/.]/g, '-').trim('-'));
+            core.setOutput('prj_code_upper', '${{github.event.inputs.PROJECT_CODE }}'.toUpperCase().replaceAll(/[/.]/g, '-').trim('-'));    
             
+  delete-secret:
+    needs: [format_prj_coode]
+    name: 'Deleting secrets'
+    runs-on: ubuntu-latest
+    env:
+      PROJECT_CODE_UPPERCASE: ${{ needs.format_prj_coode.outputs.prj_code_upper }}
+    steps:
+    - name: Creating 
+      run: |
+         gh secret delete ${{ env.PROJECT_CODE_UPPERCASE}}_KEYCLOAK_ARGOCD_CLIENT_SECRET --org ES-BAR-MEV
+         gh secret delete ${{ env.PROJECT_CODE_UPPERCASE}}_DB_ADMIN_PWD --org ES-BAR-MEV
+      env:
+          GH_TOKEN: "${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN  }}"
