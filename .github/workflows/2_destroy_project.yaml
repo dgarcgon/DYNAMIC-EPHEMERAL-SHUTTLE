@@ -103,7 +103,7 @@ jobs:
 
   executing-destroy-workflow:
     needs: [ choose-delete-or-archive-project, format_prj_coode ]
-    name: 'Executing destroy workflow'
+    name: 'starting the destruction workflows'
     runs-on: ubuntu-latest
     env:
       PROJECT_CODE_LOWERCASE: ${{ needs.format_prj_coode.outputs.prj_code_lower }}
