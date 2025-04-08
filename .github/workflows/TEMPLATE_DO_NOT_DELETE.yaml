@@ -86,6 +86,7 @@ jobs:
         sed -i "s#VAR_TEMPLATE_VNET_SUPERNET#${{ env.VNET_SUPERNET }}#g" terraform.tfvars.json
         sed -i "s#VAR_TEMPLATE_SUBNETS_COMMON_IP#${{ env.SUBNETS_COMMON_IP }}#g" terraform.tfvars.json
         sed -i "s#VAR_TEMPLATE_PROJECT_CODE_UPPERCASE#OWN_VAR_TEMPLATE_PROJECT_CODE_UPPERCASE#g" .github/workflows/reusable-create-dynamicephemeral-base.yaml
+        sed -i "s#VAR_TEMPLATE_PROJECT_CODE_UPPERCASE#OWN_VAR_TEMPLATE_PROJECT_CODE_UPPERCASE#g" .github/workflows/reusable-destroy-dynamicephemeral-base.yaml
     - name: Creating cfg-applied.txt file for OWN_VAR_TEMPLATE_PROJECT_CODE_UPPERCASE-base
       run: |
         echo "CONFIGURATION APPLIED. DO NOT DELETE THIS FILE" >> cfg-applied.txt
