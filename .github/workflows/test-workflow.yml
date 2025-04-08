@@ -2,19 +2,25 @@ name: test
 on:
   workflow_dispatch:
 jobs:
-  create-issue:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v2
-      with:
-        repository: ES-BAR-MEV-ITSM/ITSM_INC_PROD
-        ref: main
-        token: ${{ secrets.DYNAMICEPHEMERAL_ISSUES_TOKEN }}
-    - uses: JasonEtco/create-an-issue@v2
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        filename: .github/ISSUE_TEMPLATE/Cloud_Infra_DNS_Entries_Request_to_add.md
+#  create-issue:
+#    runs-on: ubuntu-latest
+#    steps:
+#    - uses: actions/checkout@v2
+#      with:
+#        repository: ES-BAR-MEV-ITSM/ITSM_INC_PROD
+#        ref: main
+#        token: ${{ secrets.DYNAMICEPHEMERAL_ISSUES_TOKEN }}
+#    - uses: JasonEtco/create-an-issue@v2
+#      env:
+#        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#      with:
+#        filename: .github/ISSUE_TEMPLATE/Cloud_Infra_DNS_Entries_Request_to_add.md
+  call-workflow-to-create-the-issue:
+    uses: ES-BAR-MEV-ITSM/ITSM_INC_PROD/.github/reusable-create-issue.yaml
+    with:
+      NAMES: "prueba"
+      LOAD_BALANCER_IP: "12345"
+        
 #    - name: Create Issue
 #      run: |
 #        echo "Creating new issue..."
