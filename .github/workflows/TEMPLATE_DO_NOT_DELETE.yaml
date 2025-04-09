@@ -13,7 +13,7 @@ on:
         default: false
         type: boolean
       DB_ADMIN_PWD:
-        description: 'DB admin password. Provide a string at least 15 characters long with upper and lower case, digits, and character set. - + _ * $'
+        description: 'DB admin password. Provide a string at least 20 characters long with upper and lower case, digits, and character set. - + _ * $'
         required: false
         default: ""
         type: text
