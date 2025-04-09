@@ -35,17 +35,22 @@ jobs:
           script: |
             core.setOutput('prj_code_lower', '${{github.event.inputs.PROJECT_CODE }}'.toLowerCase().replaceAll(/[/.]/g, '-').trim('-'));
             core.setOutput('prj_code_upper', '${{github.event.inputs.PROJECT_CODE }}'.toUpperCase().replaceAll(/[/.]/g, '-').trim('-'));    
-            
-  delete-secret:
-    needs: [format_prj_coode]
-    name: 'Deleting secrets'
-    runs-on: ubuntu-latest
-    env:
-      PROJECT_CODE_UPPERCASE: ${{ needs.format_prj_coode.outputs.prj_code_upper }}
-    steps:
-    - name: Creating 
-      run: |
-         gh secret delete ${{ env.PROJECT_CODE_UPPERCASE}}_KEYCLOAK_ARGOCD_CLIENT_SECRET --org ES-BAR-MEV
-         gh secret delete ${{ env.PROJECT_CODE_UPPERCASE}}_DB_ADMIN_PWD --org ES-BAR-MEV
-      env:
-          GH_TOKEN: "${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN  }}"
+
+      - name: Conditionally Run
+        if: contains(fromJSON('["push", "A"]'), github.event.inputs.PROJECT_CODE)
+        run: |
+         echo "OK"
+    
+#  delete-secret:
+#    needs: [format_prj_coode]
+#    name: 'Deleting secrets'
+#    runs-on: ubuntu-latest
+#    env:
+#      PROJECT_CODE_UPPERCASE: ${{ needs.format_prj_coode.outputs.prj_code_upper }}
+#    steps:
+#    - name: Creating 
+#      run: |
+#         gh secret delete ${{ env.PROJECT_CODE_UPPERCASE}}_KEYCLOAK_ARGOCD_CLIENT_SECRET --org ES-BAR-MEV
+#         gh secret delete ${{ env.PROJECT_CODE_UPPERCASE}}_DB_ADMIN_PWD --org ES-BAR-MEV
+#      env:
+#          GH_TOKEN: "${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN  }}"
