@@ -137,6 +137,7 @@ jobs:
         sed -i "s#VAR_TEMPLATE_PROJECT_CODE_UPPERCASE#OWN_VAR_TEMPLATE_PROJECT_CODE_UPPERCASE#g" .github/workflows/destroy-dynamicepehemral-k8s.yaml
         sed -i "s#VAR_TEMPLATE_PROJECT_CODE_UPPERCASE#OWN_VAR_TEMPLATE_PROJECT_CODE_UPPERCASE#g" .github/workflows/reusable-create-dynamicepehemral-k8s.yaml
         sed -i "s#VAR_TEMPLATE_PROJECT_CODE_UPPERCASE#OWN_VAR_TEMPLATE_PROJECT_CODE_UPPERCASE#g" .github/workflows/reusable-destroy-dynamicepehemral-k8s.yaml
+        sed -i "s#VAR_TEMPLATE_PROJECT_CODE_UPPERCASE#OWN_VAR_TEMPLATE_PROJECT_CODE_UPPERCASE#g" .github/workflows/manage-db.yaml
     - name: Create KEYCLOAK_ARGOCD_CLIENT_SECRET secret for OWN_VAR_TEMPLATE_PROJECT_CODE_UPPERCASE-k8s
       uses: hmanzur/actions-set-secret@v2.0.0
       with:
