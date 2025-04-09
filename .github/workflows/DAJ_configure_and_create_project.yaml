@@ -156,14 +156,18 @@ jobs:
         token: ${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN }}
         org: true
         visibility: 'private'
-    - name: Enable DDBB creation for DAJ-k8s
+#    - name: Enable DDBB creation for DAJ-k8s
+#      if: github.event.inputs.CREATE_MSSQL_DB == 'true'
+#      run: |
+#        sed -i 's#VAR_TEMPLATE_CREATE_MSSQL_DB#true#g' variables.tf
+#    - name: Disable DDBB creation for DAJ-k8s
+#      if: github.event.inputs.CREATE_MSSQL_DB == 'false'
+#      run: |
+#        sed -i 's#VAR_TEMPLATE_CREATE_MSSQL_DB#false#g' variables.tf
+    - name: Enable DDBB creation for DAJ-k8s (changing file extention)
       if: github.event.inputs.CREATE_MSSQL_DB == 'true'
       run: |
-        sed -i 's#VAR_TEMPLATE_CREATE_MSSQL_DB#true#g' variables.tf
-    - name: Disable DDBB creation for DAJ-k8s
-      if: github.event.inputs.CREATE_MSSQL_DB == 'false'
-      run: |
-        sed -i 's#VAR_TEMPLATE_CREATE_MSSQL_DB#false#g' variables.tf
+        mv opt_db.tf.donotchange opt_db.tf
     - name: Creating cfg-applied.txt file for DAJ-k8s
       run: |
         echo "CONFIGURATION APPLIED. DO NOT DELETE THIS FILE" >> DO_NOT_TOUCH/cfg-applied.txt
