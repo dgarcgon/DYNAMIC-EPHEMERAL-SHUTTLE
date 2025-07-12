@@ -32,9 +32,9 @@ jobs:
     steps:
     - name: Creating 
       run: |
-         gh repo create ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-${{ env.PROJECT_CODE_UPPERCASE}}-base --private --template ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-TEMPLATE-base
-         gh repo create ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-${{ env.PROJECT_CODE_UPPERCASE}}-frontend-aks --private --template ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-TEMPLATE-frontend-aks
-         gh repo create ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-${{ env.PROJECT_CODE_UPPERCASE}}-k8s --private --template ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-TEMPLATE-k8s
+         gh repo create dgarcgon/DYNAMIC-EPHEMERAL-${{ env.PROJECT_CODE_UPPERCASE}}-base --private --template dgarcgon/DYNAMIC-EPHEMERAL-TEMPLATE-base
+         gh repo create dgarcgon/DYNAMIC-EPHEMERAL-${{ env.PROJECT_CODE_UPPERCASE}}-frontend-aks --private --template dgarcgon/DYNAMIC-EPHEMERAL-TEMPLATE-frontend-aks
+         gh repo create dgarcgon/DYNAMIC-EPHEMERAL-${{ env.PROJECT_CODE_UPPERCASE}}-k8s --private --template dgarcgon/DYNAMIC-EPHEMERAL-TEMPLATE-k8s
       env:
           GH_TOKEN: "${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN  }}"
 
@@ -47,9 +47,9 @@ jobs:
     steps:
     - name: Creating 
       run: |
-         gh api --method PUT -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" /repos/ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-${{ env.PROJECT_CODE_UPPERCASE}}-base/actions/permissions/access -f "access_level=organization"
-         gh api --method PUT -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" /repos/ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-${{ env.PROJECT_CODE_UPPERCASE}}-frontend-aks/actions/permissions/access -f "access_level=organization"
-         gh api --method PUT -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" /repos/ES-BAR-MEV/IDM-IAC-DYNAMIC-EPHEMERAL-${{ env.PROJECT_CODE_UPPERCASE}}-k8s/actions/permissions/access -f "access_level=organization"
+         gh api --method PUT -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" /repos/dgarcgon/DYNAMIC-EPHEMERAL-${{ env.PROJECT_CODE_UPPERCASE}}-base/actions/permissions/access -f "access_level=organization"
+         gh api --method PUT -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" /repos/dgarcgon/DYNAMIC-EPHEMERAL-${{ env.PROJECT_CODE_UPPERCASE}}-frontend-aks/actions/permissions/access -f "access_level=organization"
+         gh api --method PUT -H "Accept: application/vnd.github+json" -H "X-GitHub-Api-Version: 2022-11-28" /repos/dgarcgon/DYNAMIC-EPHEMERAL-${{ env.PROJECT_CODE_UPPERCASE}}-k8s/actions/permissions/access -f "access_level=organization"
       env:
           GH_TOKEN: "${{ secrets.DYNAMICEPHEMERAL_WORKFLOW_TOKEN  }}"
 
