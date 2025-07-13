@@ -6,7 +6,7 @@ on:
         description: 'Project Code: (Example: demo)'
         required: true
         default: ""
-        type: text
+        type: string
 
 jobs:
   format_prj_coode:
