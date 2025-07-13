@@ -27,8 +27,30 @@ jobs:
         run: |
           if [[ ${{ github.event.inputs.CREATE_MSSQL_DB }} == true ]]; then
             if [[ -z "${{ github.event.inputs.DB_ADMIN_PWD }}" ]]; then
-               echo "DB Admin password required"
-               exit 1
+              echo "DB Admin password required"
+              exit 1
+            fi
+            
+            PASSWORD="${{ github.event.inputs.DB_ADMIN_PWD }}"
+            if [[ ${#PASSWORD} -lt 15 ]]; then
+              echo "Password must be at least 15 characters long"
+              exit 1
+            fi
+            if ! [[ $PASSWORD =~ [A-Z] ]]; then
+              echo "Password must contain at least one uppercase letter"
+              exit 1
+            fi
+            if ! [[ $PASSWORD =~ [a-z] ]]; then
+              echo "Password must contain at least one lowercase letter"
+              exit 1
+            fi
+            if ! [[ $PASSWORD =~ [0-9] ]]; then
+              echo "Password must contain at least one digit"
+              exit 1
+            fi
+            if ! [[ $PASSWORD =~ [-+_*\\$] ]]; then
+              echo "Password must contain at least one special character (-, +, _, *, $)"
+              exit 1
             fi
           fi
   
